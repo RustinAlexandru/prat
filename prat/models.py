@@ -83,6 +83,7 @@ class Achievement(models.Model):
     """model class for an achievement, M-to-M relationship with User model,
     an achievement is earned by a user (ex: )
     """
+    
     achievement_name = models.CharField()
 
 
