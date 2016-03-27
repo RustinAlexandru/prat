@@ -12,34 +12,36 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
     # https://github.com/mfogel/django-timezone-field
     timezone = TimeZoneField()
+    achievements = models.ManyToManyField(Achievement)
 
 
 class Task(models.Model):
-    """model class for a task, M-to-1 relationship with User model, 1-to-1 with Group model, 1-to-M with UserTaskActivy model, M-to-1 with Category model, 1-to-1 with UserTaskEvidence model,
+    """model class for a task, M-to-1 relationship with UserProfile model, 1-to-1 with UserGroup model, 1-to-M with UserTaskActivy model, M-to-1 with Category model, M-to-1 with UserTaskEvidence model,
         a task is set and completed by a user
     """
 
     task_name = models.TextField()
-
-
+    task_category = models.ForeignKey(Category)
+    user_task_evidence = models.ForeignKey(UserTaskEvidence)
 
 
 class PredefinedTask(models.Model):
     """model class for predefined tasks, M-to-1 relationship with Category model,
         a set of predefined tasks (ex: workout, floss, take vitamins)
     """
-
+    predefined_task_category = models.ForeignKey(Category)
 
 
 class UserGroup(models.Model):
-    """model class for a group of users, M-to-M relationship with User model,
+    """model class for a group of users, M-to-M relationship with UserProfile model,
         1-to-M with Comment model,
         a group of users shares a task
     """
 
     group_name = models.TextField()
     group_members_count = models.IntegerField()
-
+    task = models.OneToOneField(Task)
+    users = models.ManyToManyField(UserProfile)
 
 
 class UserTaskEvidence(models.Model):
@@ -48,16 +50,15 @@ class UserTaskEvidence(models.Model):
     """
 
 
-
 class UserGroupComment(models.Model):
-    """model class for a comment on a group chat, M-to-1 relationship with Group model,
+    """model class for a comment on a group chat, M-to-1 relationship with UserGroup model,
     each group has multiple comments
     """
 
     text = models.TextField(max_length=100)
     date_added = models.DateTimeField(auto_now_add=True)
     author = models.CharField(default='Anonymous', max_length=20)
-
+    user_group = models.ForeignKey(UserGroup)
 
     def __unicode__(self):
         return u'{} @ {}'.format(self.author, self.date_added)
@@ -71,18 +72,21 @@ class Theme(models.Model):
     theme_name = models.CharField()
 
 
-
 class UserThemes(models.Model):
     """model class for user-themes, M-to-1 relationship with Theme model,
     M-to-1 with user,
     associative entity, each user has multiples themes he can pick
     """
 
+    theme = models.ForeignKey(Theme)
+    user = models.ForeignKey(User)
+
 
 class Achievement(models.Model):
-    """model class for an achievement, M-to-M relationship with User model,
+    """model class for an achievement, M-to-M relationship with UserProfile model,
     an achievement is earned by a user (ex: )
     """
+
     achievement_name = models.CharField()
 
 
@@ -99,3 +103,4 @@ class UserTaskActivy(models.Model):
     tracks daily progress for a user's task
     """
 
+    task = models.ForeignKey(Task)
