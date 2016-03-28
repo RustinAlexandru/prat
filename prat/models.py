@@ -51,14 +51,14 @@ class UserTaskEvidence(models.Model):
 
 
 class UserGroupComment(models.Model):
-    """model class for a comment on a group chat, M-to-1 relationship with UserGroup model,
+    """model class for a comment on a group chat, M-to-1 relationship with UserGroup model, M-to-1 with User
     each group has multiple comments
     """
 
     text = models.TextField(max_length=100)
     date_added = models.DateTimeField(auto_now_add=True)
-    author = models.CharField(default='Anonymous', max_length=20)
     user_group = models.ForeignKey(UserGroup)
+    user = models.ForeignKey(User)
 
     def __unicode__(self):
         return u'{} @ {}'.format(self.author, self.date_added)
