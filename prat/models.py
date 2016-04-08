@@ -11,8 +11,7 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User)
     # https://github.com/mfogel/django-timezone-field
-    timezone = TimeZoneField()
-    achievements = models.ManyToManyField(Achievement)
+    achievements = models.ManyToManyField('Achievement')
 
 
 class Task(models.Model):
@@ -21,15 +20,15 @@ class Task(models.Model):
     """
 
     task_name = models.TextField()
-    task_category = models.ForeignKey(Category)
-    user_task_evidence = models.ForeignKey(UserTaskEvidence)
+    task_category = models.ForeignKey('Category')
+    user_task_evidence = models.ForeignKey('UserTaskEvidence')
 
 
 class PredefinedTask(models.Model):
     """model class for predefined tasks, M-to-1 relationship with Category model,
         a set of predefined tasks (ex: workout, floss, take vitamins)
     """
-    predefined_task_category = models.ForeignKey(Category)
+    predefined_task_category = models.ForeignKey('Category')
 
 
 class UserGroup(models.Model):
@@ -40,8 +39,8 @@ class UserGroup(models.Model):
 
     group_name = models.TextField()
     group_members_count = models.IntegerField()
-    task = models.OneToOneField(Task)
-    users = models.ManyToManyField(UserProfile)
+    task = models.OneToOneField('Task')
+    users = models.ManyToManyField('UserProfile')
 
 
 class UserTaskEvidence(models.Model):
@@ -57,7 +56,7 @@ class UserGroupComment(models.Model):
 
     text = models.TextField(max_length=100)
     date_added = models.DateTimeField(auto_now_add=True)
-    user_group = models.ForeignKey(UserGroup)
+    user_group = models.ForeignKey('UserGroup')
     user = models.ForeignKey(User)
 
     def __unicode__(self):
@@ -69,7 +68,7 @@ class Theme(models.Model):
        a theme is a set of preferences (ex: chain appearance, colours, etc)
     """
 
-    theme_name = models.CharField()
+    theme_name = models.CharField(max_length=160)
 
 
 class UserThemes(models.Model):
@@ -78,7 +77,7 @@ class UserThemes(models.Model):
     associative entity, each user has multiples themes he can pick
     """
 
-    theme = models.ForeignKey(Theme)
+    theme = models.ForeignKey('Theme')
     user = models.ForeignKey(User)
 
 
@@ -87,7 +86,7 @@ class Achievement(models.Model):
     an achievement is earned by a user (ex: )
     """
 
-    achievement_name = models.CharField()
+    achievement_name = models.CharField(max_length=160)
 
 
 class Category(models.Model):
@@ -95,7 +94,7 @@ class Category(models.Model):
     a classification of tasks (ex: health, study, etc)
     """
 
-    category_name = models.CharField()
+    category_name = models.CharField(max_length=160)
 
 
 class UserTaskActivy(models.Model):
@@ -103,4 +102,4 @@ class UserTaskActivy(models.Model):
     tracks daily progress for a user's task
     """
 
-    task = models.ForeignKey(Task)
+    task = models.ForeignKey('Task')
