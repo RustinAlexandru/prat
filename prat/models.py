@@ -1,9 +1,10 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+
+# More
 import pytz
 from timezone_field import TimeZoneField
-
 
 class UserProfile(models.Model):
     """model class for a user profile, 1-to-1 relationship with User model, stores additional information about a user (timezone, language, display name, etc)
@@ -15,7 +16,7 @@ class UserProfile(models.Model):
 
 
 class Task(models.Model):
-    """model class for a task, M-to-1 relationship with UserProfile model, 1-to-1 with UserGroup model, 1-to-M with UserTaskActivy model, M-to-1 with Category model, M-to-1 with UserTaskEvidence model,
+    """model class for a task, M-to-1 relationship with UserProfile model, 1-to-1 with UserGroup model, 1-to-M with UserTaskActivity model, M-to-1 with Category model, M-to-1 with UserTaskEvidence model,
         a task is set and completed by a user
     """
 
@@ -97,7 +98,7 @@ class Category(models.Model):
     category_name = models.CharField(max_length=160)
 
 
-class UserTaskActivy(models.Model):
+class UserTaskActivity(models.Model):
     """model class for a user-task activity, M-to-1 relationship with Task model,
     tracks daily progress for a user's task
     """
