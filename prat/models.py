@@ -10,9 +10,20 @@ class UserProfile(models.Model):
     """model class for a user profile, 1-to-1 relationship with User model, stores additional information about a user (timezone, language, display name, etc)
     """
 
-    user = models.OneToOneField(User)
-    # https://github.com/mfogel/django-timezone-field
-    achievements = models.ManyToManyField('Achievement')
+    # Properties
+    first_name = models.CharField(max_length = 100, blank = True, null = True)
+    last_name  = models.CharField(max_length = 100, blank = True, null = True)
+    birthday   = models.DateField(null = True, blank = True)
+    gender = models.CharField(max_length = 1, 
+        choices = (
+            ('M', 'Male'),
+            ('F', 'Female')
+        ), blank = True, null = True)
+    avatar = models.ImageField(upload_to = 'images/avatars/',
+        default = 'images/avatars/no_avatar.jpg', blank = True, null = True)
+
+    # Relations
+    user = models.OneToOneField(User, on_delete = models.CASCADE, related_name = 'profile', verbose_name = 'user')
 
 
 class Task(models.Model):
@@ -20,16 +31,36 @@ class Task(models.Model):
         a task is set and completed by a user
     """
 
-    task_name = models.TextField()
-    task_category = models.ForeignKey('Category')
-    user_task_evidence = models.ForeignKey('UserTaskEvidence')
+    # Properties
+    name = models.CharField(max_length = 100, null = False)
+    sessions_record = models.IntegerField(default = 0, null = False)
+    sessions_total = models.IntegerField(default = 0, null = False)
+    experience_total = models.IntegerField(default = 0, null = False)
+    experience_reward = models.IntegerField(default = 10, null = False)
+    experience_sessions = models.IntegerField(default = 1, null = False)
+    experience_multiplier = models.FloatField(default = 1.2, null = False)
+    points_total = models.IntegerField(default = 0, null = False)
+    points_reward = models.IntegerField(default = 1, null = False)
+    points_sessions = models.IntegerField(default = 1, null = False)
+    points_multiplier = models.FloatField(default = 1, null = False)
+    last_update = models.DateTimeField(auto_now_add = True, null = False)
+    # more to come
+
+    # Relations
+    category = models.ForeignKey('Category', verbose_name = 'category', related_name = 'tasks', on_delete = models.CASCADE)
+    owner = models.ForeignKey(User, verbose_name = 'owner', related_name = 'tasks', on_delete = models.CASCADE)
 
 
 class PredefinedTask(models.Model):
     """model class for predefined tasks, M-to-1 relationship with Category model,
         a set of predefined tasks (ex: workout, floss, take vitamins)
     """
-    predefined_task_category = models.ForeignKey('Category')
+
+    # Properties
+    # later
+    
+    # Relations
+    category = models.ForeignKey('Category', verbose_name = 'category', related_name = 'predef_tasks', on_delete = models.CASCADE)
 
 
 class UserGroup(models.Model):
@@ -38,27 +69,27 @@ class UserGroup(models.Model):
         a group of users shares a task
     """
 
-    group_name = models.TextField()
-    group_members_count = models.IntegerField()
-    task = models.OneToOneField('Task')
-    users = models.ManyToManyField('UserProfile')
+    # Properties
+    name = models.CharField(max_length = 100)
+    
 
-
-class UserTaskEvidence(models.Model):
-    """model class for a user-task evidence, 1-to-M relationship with Task model,
-    associative entity keeps a total of points, experience, progress for each user's task
-    """
-
+    # Relations
+    task = models.OneToOneField('Task', related_name = 'group', verbose_name = 'task', null = False)
+    users = models.ManyToManyField(User) # might do a through model
 
 class UserGroupComment(models.Model):
     """model class for a comment on a group chat, M-to-1 relationship with UserGroup model, M-to-1 with User
     each group has multiple comments
     """
 
-    text = models.TextField(max_length=100)
-    date_added = models.DateTimeField(auto_now_add=True)
-    user_group = models.ForeignKey('UserGroup')
-    user = models.ForeignKey(User)
+    # Properties
+    text = models.CharField(max_length = 200)
+    date_added = models.DateTimeField(auto_now_add = True)
+
+
+    # Relations
+    group = models.ForeignKey('UserGroup', related_name = 'comments', verbose_name = 'group', on_delete = models.CASCADE)
+    user  = models.ForeignKey(User, related_name = 'comments', verbose_name = 'user', on_delete = models.CASCADE)
 
     def __unicode__(self):
         return u'{} @ {}'.format(self.author, self.date_added)
@@ -69,7 +100,8 @@ class Theme(models.Model):
        a theme is a set of preferences (ex: chain appearance, colours, etc)
     """
 
-    theme_name = models.CharField(max_length=160)
+    # Properties
+    name = models.CharField(max_length = 100)
 
 
 class UserThemes(models.Model):
@@ -78,8 +110,9 @@ class UserThemes(models.Model):
     associative entity, each user has multiples themes he can pick
     """
 
-    theme = models.ForeignKey('Theme')
-    user = models.ForeignKey(User)
+    # Relations
+    theme = models.ForeignKey('Theme', on_delete = models.CASCADE)
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
 
 
 class Achievement(models.Model):
@@ -87,7 +120,7 @@ class Achievement(models.Model):
     an achievement is earned by a user (ex: )
     """
 
-    achievement_name = models.CharField(max_length=160)
+    name = models.CharField(max_length = 100)
 
 
 class Category(models.Model):
@@ -95,7 +128,7 @@ class Category(models.Model):
     a classification of tasks (ex: health, study, etc)
     """
 
-    category_name = models.CharField(max_length=160)
+    name = models.CharField(max_length = 100)
 
 
 class UserTaskActivity(models.Model):
@@ -103,4 +136,11 @@ class UserTaskActivity(models.Model):
     tracks daily progress for a user's task
     """
 
-    task = models.ForeignKey('Task')
+    # Properties
+    date_created = models.DateTimeField(auto_now_add = True, null = False)
+    experience_gained = models.IntegerField(default = 0, null = False)
+    points_gained = models.IntegerField(default = 0, null = False)
+
+    # Relations
+    task = models.ForeignKey('Task', verbose_name = 'task', on_delete = models.CASCADE)
+    user = models.ForeignKey(User, verbose_name = 'user', on_delete = models.CASCADE)
