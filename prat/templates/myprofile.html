@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block content %}
-    <button>Edit Profile</button>
-    
+    <a href="{% url 'editProfile' %}" class="btn">Edit Profile</a>
+
     <h4>Name</h4>
     <p>{{ profile.first_name }} {{ profile.last_name }}</p>
 
