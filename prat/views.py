@@ -43,7 +43,7 @@ def register(request):
                 login(request, user_auth)
                 profile = UserProfile.objects.create(user=user)
                 profile.save()
-                return redirect('user_profile', username=username)
+                return redirect('viewProfile', username=username)
         else:
             context = {'form': form}
             return render(request, 'register.html', context)

@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': reverse_lazy('index')}, name='logout'),
-    url(r'^register/$', views.register, name='register')
+    url(r'^register/$', views.register, name='register'),
     url(r'^profile/edit/$', views.editProfile, name='editProfile'),
     url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.viewProfile, name='viewProfile'),
     url(r'^profile/$', views.viewProfile, name='viewProfile'),
