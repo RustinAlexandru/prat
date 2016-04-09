@@ -14,7 +14,7 @@ class UserProfile(models.Model):
     first_name = models.CharField(max_length = 100, blank = True, null = True)
     last_name  = models.CharField(max_length = 100, blank = True, null = True)
     birthday   = models.DateField(null = True, blank = True)
-    gender = models.CharField(max_length = 1, 
+    gender = models.CharField(max_length = 1,
         choices = (
             ('M', 'Male'),
             ('F', 'Female')
@@ -50,6 +50,10 @@ class Task(models.Model):
     category = models.ForeignKey('Category', verbose_name = 'category', related_name = 'tasks', on_delete = models.CASCADE)
     owner = models.ForeignKey(User, verbose_name = 'owner', related_name = 'tasks', on_delete = models.CASCADE)
 
+    def __unicode__(self):
+        return u'{}'.format(self.name)
+
+
 
 class PredefinedTask(models.Model):
     """model class for predefined tasks, M-to-1 relationship with Category model,
@@ -58,7 +62,7 @@ class PredefinedTask(models.Model):
 
     # Properties
     # later
-    
+
     # Relations
     category = models.ForeignKey('Category', verbose_name = 'category', related_name = 'predef_tasks', on_delete = models.CASCADE)
 
@@ -71,7 +75,7 @@ class UserGroup(models.Model):
 
     # Properties
     name = models.CharField(max_length = 100)
-    
+
 
     # Relations
     task = models.OneToOneField('Task', related_name = 'group', verbose_name = 'task', null = False)
@@ -130,6 +134,8 @@ class Category(models.Model):
 
     name = models.CharField(max_length = 100)
 
+    def __unicode__(self):
+        return u'{}'.format(self.name)
 
 class UserTaskActivity(models.Model):
     """model class for a user-task activity, M-to-1 relationship with Task model,
