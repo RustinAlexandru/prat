@@ -57,6 +57,10 @@ class Task(models.Model):
     owner = models.ForeignKey(User, verbose_name = 'owner',
                     related_name = 'tasks', on_delete = models.CASCADE)
 
+    def __unicode__(self):
+        return u'{}'.format(self.name)
+
+
 
 class PredefinedTask(models.Model):
     """model class for predefined tasks, M-to-1 relationship with Category model,
@@ -143,6 +147,8 @@ class Category(models.Model):
 
     name = models.CharField(max_length = 100)
 
+    def __unicode__(self):
+        return u'{}'.format(self.name)
 
 class UserTaskActivity(models.Model):
     """model class for a user-task activity, M-to-1 relationship with Task model,
