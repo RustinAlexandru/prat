@@ -3,3 +3,4 @@ db.sqlite3
 **/**/*.pyc
 prat/migrations/*.py
 images/*
+!images/avatars/no_avatar.jpg
