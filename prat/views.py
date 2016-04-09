@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from prat.models import UserProfile, Task
 
 # Prat Forms
-from prat.forms import EditProfileForm
+from prat.forms import EditProfileForm, UserRegisterForm
 
 def index(request):
     context = {
