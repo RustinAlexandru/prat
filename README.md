@@ -8,12 +8,15 @@ Prat The Best :D
 
 - Requirements:
 
-`pip install pytz`
+    `pip install pytz`
 
-`pip install django-timezone-field`
+    `pip install django-timezone-field`
+
+    `pip install django_compressor`
+
 - Clone the project
 
-` git clone https://github.com/theadriann/prat.git `
+    ` git clone https://github.com/theadriann/prat.git `
 
 
 
@@ -22,13 +25,13 @@ Prat The Best :D
 
 - Get the database ready
 
-` ./manage.py makemigrations `
+    ` ./manage.py makemigrations `
 
-` ./manage.py migrate `
+    ` ./manage.py migrate `
 
 - Start Server
 
-` ./manage.py runserver `
+    ` ./manage.py runserver `
 
 ## Contributing
 

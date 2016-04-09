@@ -1,3 +1,4 @@
+{% load compress %}
 {% load staticfiles %}
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
@@ -20,6 +21,9 @@
         </style>
         <link rel="stylesheet" href="{% static "css/bootstrap-theme.min.css" %}">
         <link rel="stylesheet" href="{% static "css/main.css" %}">
+        {% compress css %}
+        <link href="{% static "css/prat.less"%}" media="all" rel="stylesheet" type="text/less"/>
+        {% endcompress %}
 
         <script src="{% static "js/vendor/modernizr-2.8.3-respond-1.4.2.min.js" %}"></script>
     </head>
