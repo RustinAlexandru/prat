@@ -49,11 +49,10 @@
               </li>
             </ul>
           {% else %}
-          <div id="navbar" class="navbar-collapse collapse">
-            <div class="navbar-right">
-              <a href="{% url "login" %}">Login</a>
-            </div>
-          </div>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="{% url "login" %}">Login</a></li>
+              <li><a href="#" onclick="alert('Nice try')">Register</a></li>
+            </ul>
           {% endif %}
         </div>
       </nav>

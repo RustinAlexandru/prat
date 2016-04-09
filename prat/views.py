@@ -9,4 +9,7 @@ def index(request):
         "tasks": ["1", "2", "3"]
     }
 
-    return render(request, 'index.html', context)
+    if request.user.is_authenticated():
+        return render(request, 'index.html', context)
+    else:
+        return render(request, 'welcome.html', context)
