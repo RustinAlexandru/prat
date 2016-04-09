@@ -21,6 +21,33 @@ def index(request):
     else:
         return render(request, 'welcome.html', context)
 
+def register(request):
+    if request.method == 'GET':
+        form = UserRegisterForm()
+        context = {'form': form}
+        return render(request, 'register.html', context)
+    elif request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            email = form.cleaned_data['email']
+            user = User.objects.create(username=username, email=email)
+            user.set_password(password)
+            user.save()
+
+            user_auth = authenticate(username=username, password=password)
+            if user_auth is None:
+                return redirect('login')
+            else:
+                login(request, user_auth)
+                profile = UserProfile.objects.create(user=user)
+                profile.save()
+                return redirect('user_profile', username=username)
+        else:
+            context = {'form': form}
+            return render(request, 'register.html', context)
+
 @login_required
 def viewProfile(request, username = None):
 
@@ -65,6 +92,9 @@ def editProfile(request):
                 profile.avatar = form['avatar'].value()
             if form.cleaned_data['email']:
                 user.email = form.cleaned_data['email']
+                user.save()
+            if form.cleaned_data['username']:
+                user.username = form.cleaned_data['username']
                 user.save()
             profile.save()
         else:
