@@ -4,3 +4,4 @@ db.sqlite3
 prat/migrations/*.py
 images/*
 !images/avatars/no_avatar.jpg
+!prat/migrations/__init__.py
