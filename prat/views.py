@@ -51,7 +51,6 @@ def register(request):
 
 @login_required
 def view_profile(request, username = None):
-
     if username:
         user = User.objects.filter(username = username).first()
     else:
@@ -106,14 +105,18 @@ def edit_profile(request):
 def view_task(request, pk):
     if request.method == 'GET':
         task = Task.objects.get(pk = pk)
-        context = {
-            'task': task
-        }
-        return render(request, 'task_details.html', context)
+        if task.owner == request.user:
+            context = {
+                'task': task
+            }
+            return render(request, 'task_details.html', context)
+        else:
+            return redirect('index')
 
 # def edit_task(request):
 #     #TODO
 
+@login_required
 def create_task(request):
     if request.method == 'GET':
         form = CreateTaskForm()

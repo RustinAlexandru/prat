@@ -9,6 +9,6 @@
 
   <h4>Your Tasks</h4>
   {% for task in tasks %}
-    <li>{{ task }}</li>
+    <li><a href="{% url 'viewTask' task.pk %}"> {{ task.name }} </a></li>
   {% endfor %}
 {% endblock %}
