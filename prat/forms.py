@@ -1,7 +1,9 @@
-from django.forms import Form, ModelForm, CharField, Textarea, PasswordInput, ImageField,\
-            EmailField, ValidationError, ChoiceField, DateField, SelectDateWidget
+from django.forms import Form, ModelForm, CharField, Textarea, PasswordInput, \
+            ImageField, EmailField, ValidationError, ChoiceField, DateField, \
+            SelectDateWidget, ChoiceField
 from django.contrib.auth.models import User
-from prat.models import Task
+from prat.models import Task, Category
+
 
 class UserRegisterForm(Form):
     username = CharField(max_length=30)
@@ -19,6 +21,7 @@ class UserRegisterForm(Form):
         if username and User.objects.filter(username=username).count():
             raise ValidationError('Username taken, pick another one!')
         return username
+
 
 class EditProfileForm(Form):
     username = CharField(max_length=30, required = False)
@@ -46,6 +49,7 @@ class EditProfileForm(Form):
             raise ValidationError('Username taken, pick another one!')
         return username
 
+
 class CreateTaskForm(ModelForm):
     class Meta:
         model = Task
@@ -56,8 +60,11 @@ class CreateTaskForm(ModelForm):
             },
         }
 
-    def clean_category(self):
-        category = self.clean_data.get('category')
-        if not category:
-            raise ValidationError('You need to pick a category!')
-        return category
+
+class EditTaskForm(Form):
+    name = CharField(max_length=100, required = False)
+    category = ChoiceField(
+        choices=((cat.pk, cat.name) for cat in Category.objects.all()),
+        required = False
+        )
+

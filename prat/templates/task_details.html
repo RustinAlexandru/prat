@@ -2,5 +2,6 @@
 
 {% block content %}
     <h4> {{ task.name }} </h4>
+    <a href="{% url 'editTask' task.pk %}" class="btn">Edit Task</a>
     <p> {{ task.category }} </p>
 {% endblock %}

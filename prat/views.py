@@ -8,7 +8,8 @@ from django.contrib.auth.models import User
 from prat.models import UserProfile, Task, Category
 
 # Prat Forms
-from prat.forms import EditProfileForm, UserRegisterForm, CreateTaskForm
+from prat.forms import EditProfileForm, UserRegisterForm, CreateTaskForm, \
+            EditTaskForm
 
 def index(request):
     if request.user.is_authenticated():
@@ -113,8 +114,32 @@ def view_task(request, pk):
         else:
             return redirect('index')
 
-# def edit_task(request):
-#     #TODO
+@login_required
+def edit_task(request, pk):
+    task = Task.objects.get(pk = pk)
+    if task.owner != request.user:
+        return redirect('index')
+
+    if request.method == 'GET':
+        form = EditTaskForm()
+        context = {
+            'form': form,
+        }
+        return render(request, 'edit_task.html', context)
+    elif request.method ==  'POST':
+        form = EditTaskForm(request.POST)
+
+        if form.is_valid():
+            if form.cleaned_data['name']:
+                task.name = form.cleaned_data['name']
+            if form.cleaned_data['category']:
+                task_pk = form.cleaned_data['category']
+                task.category = Category.objects.get(pk = task_pk)
+            task.save()
+        else:
+            context = {'form': form}
+            return render(request, 'edit_task.html', context)
+        return redirect('viewTask', pk=pk)
 
 @login_required
 def create_task(request):

@@ -28,11 +28,12 @@ urlpatterns = [
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': reverse_lazy('index')}, name='logout'),
     url(r'^register/$', views.register, name='register'),
-    url(r'^task_details/(?P<pk>\d+)/$', views.view_task, name='viewTask'),
+    url(r'^task/details/(?P<pk>\d+)/$', views.view_task, name='viewTask'),
+    url(r'^task/edit/(?P<pk>\d+)/$', views.edit_task, name='editTask'),
     url(r'^profile/edit/$', views.edit_profile, name='editProfile'),
     url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.view_profile, name='viewProfile'),
     url(r'^profile/$', views.view_profile, name='viewProfile'),
-    url(r'^create_task/$', views.create_task, name='createTask'),
+    url(r'^task/create/$', views.create_task, name='createTask'),
     url(r'^$', views.index, name='index'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
