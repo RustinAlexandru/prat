@@ -57,7 +57,7 @@ class CreateTaskForm(ModelForm):
         }
 
     def clean_category(self):
-        category = self.clean_data.get('category')
+        category = self.cleaned_data.get('category')
         if not category:
             raise ValidationError('You need to pick a category!')
         return category
