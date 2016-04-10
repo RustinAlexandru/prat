@@ -5,6 +5,8 @@
 {% endblock %}
 
 {% block content %}
+<a href="{% url 'createTask' %}" class="btn btn-info" role="button"> Create task </a>
+
   <h4>Your Tasks</h4>
   {% for task in tasks %}
     <li>{{ task }}</li>

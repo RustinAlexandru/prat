@@ -28,9 +28,10 @@ urlpatterns = [
     url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html'}, name='login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout', {'next_page': reverse_lazy('index')}, name='logout'),
     url(r'^register/$', views.register, name='register'),
-    url(r'^profile/edit/$', views.editProfile, name='editProfile'),
-    url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.viewProfile, name='viewProfile'),
-    url(r'^profile/$', views.viewProfile, name='viewProfile'),
+    url(r'^profile/edit/$', views.edit_profile, name='editProfile'),
+    url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.view_profile, name='viewProfile'),
+    url(r'^profile/$', views.view_profile, name='viewProfile'),
+    url(r'^create_task/$', views.create_task, name='createTask'),
     url(r'^$', views.index, name='index'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

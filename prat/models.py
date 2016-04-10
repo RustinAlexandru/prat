@@ -82,7 +82,7 @@ class UserGroup(models.Model):
     """
 
     # Properties
-    name = models.CharField(max_length = 100)
+    name = models.CharField(max_length = 100, null=False)
 
 
     # Relations
