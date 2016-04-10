@@ -60,6 +60,12 @@ class CreateTaskForm(ModelForm):
             },
         }
 
+    def clean_category(self):
+        category = self.cleaned_data.get('category')
+        if not category:
+            raise ValidationError('You need to pick a category!')
+        return category
+
 
 class EditTaskForm(Form):
     name = CharField(max_length=100, required = False)
@@ -67,4 +73,3 @@ class EditTaskForm(Form):
         choices=((cat.pk, cat.name) for cat in Category.objects.all()),
         required = False
         )
-
