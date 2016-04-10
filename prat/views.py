@@ -5,20 +5,21 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
-from prat.models import UserProfile, Task
+from prat.models import UserProfile, Task, Category
 
 # Prat Forms
-from prat.forms import EditProfileForm, UserRegisterForm
+from prat.forms import EditProfileForm, UserRegisterForm, CreateTaskForm
 
 def index(request):
-    context = {
-        "user": request.user,
-        "tasks": ["1", "2", "3"]
-    }
-
     if request.user.is_authenticated():
+        user_tasks = request.user.tasks.all()
+        context = {
+            "user": request.user,
+            "tasks": user_tasks
+        }
         return render(request, 'index.html', context)
     else:
+        context = {}
         return render(request, 'welcome.html', context)
 
 def register(request):
@@ -49,7 +50,7 @@ def register(request):
             return render(request, 'register.html', context)
 
 @login_required
-def viewProfile(request, username = None):
+def view_profile(request, username = None):
 
     if username:
         user = User.objects.filter(username = username).first()
@@ -66,7 +67,7 @@ def viewProfile(request, username = None):
     return render(request, 'profile.html', context)
 
 @login_required
-def editProfile(request):
+def edit_profile(request):
     if request.method == 'GET':
         form = EditProfileForm()
         context = {
@@ -113,4 +114,29 @@ def view_task(request, pk):
 
 # def edit_task(request):
 #     #TODO
+
+
+def create_task(request):
+    if request.method == 'GET':
+        form = CreateTaskForm()
+        context = {
+            'form': form,
+        }
+        return render(request, 'create_task.html', context)
+    elif request.method == 'POST':
+        form = CreateTaskForm(request.POST)
+        user = request.user
+
+        if form.is_valid():
+            if form.cleaned_data['name']:
+                name = form.cleaned_data['name']
+            if form.cleaned_data['category']:
+                category = form.cleaned_data['category']
+            task = Task.objects.create(name = name, category = category,
+                                       owner = user)
+            task.save()
+        else:
+            context = {'form': form}
+            return render(request, 'create_task.html', context)
+        return redirect('index')
 

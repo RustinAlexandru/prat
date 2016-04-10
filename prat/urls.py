@@ -32,6 +32,10 @@ urlpatterns = [
     url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.viewProfile, name='viewProfile'),
     url(r'^profile/$', views.viewProfile, name='viewProfile'),
     url(r'^task_details/(?P<pk>\d+)/$', views.view_task, name='viewTask'),
+    url(r'^profile/edit/$', views.edit_profile, name='editProfile'),
+    url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.view_profile, name='viewProfile'),
+    url(r'^profile/$', views.view_profile, name='viewProfile'),
+    url(r'^create_task/$', views.create_task, name='createTask'),
     url(r'^$', views.index, name='index'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
