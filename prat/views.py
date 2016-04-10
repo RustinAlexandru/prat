@@ -111,10 +111,8 @@ def view_task(request, pk):
         }
         return render(request, 'task_details.html', context)
 
-
 # def edit_task(request):
 #     #TODO
-
 
 def create_task(request):
     if request.method == 'GET':
@@ -139,4 +137,3 @@ def create_task(request):
             context = {'form': form}
             return render(request, 'create_task.html', context)
         return redirect('index')
-
