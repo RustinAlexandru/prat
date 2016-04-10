@@ -72,7 +72,6 @@ def editProfile(request):
         context = {
             'form': form,
         }
-
         return render(request, 'edit_profile.html', context)
     elif request.method ==  'POST':
         form = EditProfileForm(request.POST, request.FILES)
@@ -101,3 +100,17 @@ def editProfile(request):
             context = {'form': form}
             return render(request, 'edit_profile.html', context)
         return redirect('viewProfile')
+
+@login_required
+def view_task(request, pk):
+    if request.method == 'GET':
+        task = Task.objects.get(pk = pk)
+        context = {
+            'task': task
+        }
+        return render(request, 'task_details.html', context)
+
+
+# def edit_task(request):
+#     #TODO
+
