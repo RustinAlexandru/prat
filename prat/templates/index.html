@@ -10,17 +10,56 @@
     <h4>Today's Tasks</h4>
     {% for task in tasks %}
         {% if task not in completed_tasks and task not in overdue_tasks %}
-            <li><a href="{% url 'viewTask' task.pk %}"> {{ task.name }}</a></li>
+            <div class="task-card">
+                <div class="header">
+                    <h4>{{ task.name }}</h4>
+                </div>
+                <div class="footer">
+                    <a href="{% url 'viewTask' task.pk %}">
+                        <button type="button" class="btn btn-success task-button">
+                            Details
+                        </button>
+                    </a>
+                    <button type="button" class="btn btn-success task-button">
+                        Complete <i class="coins small"></i>
+                    </button>
+                </div>
+            </div>
         {% endif %}
     {% endfor %}
     
     <h4>Completed Tasks</h4>
     {% for task in completed_tasks %}
-        <li><a href="{% url 'viewTask' task.pk %}"> {{ task.name }}</a></li>
+        <div class="task-card completed">
+            <div class="header">
+                <h4>{{ task.name }}</h4>
+            </div>
+            <div class="footer">
+                <a href="{% url 'viewTask' task.pk %}">
+                    <button type="button" class="btn btn-success task-button">
+                        Details
+                    </button>
+                </a>
+            </div>
+        </div>
     {% endfor %}
 
     <h4>Overdue</h4>
     {% for task in overdue_tasks %}
-        <li><a href="{% url 'viewTask' task.pk %}"> {{ task.name }}</a></li>
+        <div class="task-card overdue">
+            <div class="header">
+                <h4>{{ task.name }}</h4>
+            </div>
+            <div class="footer">
+                <a href="{% url 'viewTask' task.pk %}">
+                    <button type="button" class="btn btn-success task-button">
+                        Details
+                    </button>
+                </a>
+                <button type="button" class="btn btn-success task-button">
+                    Restart
+                </button>
+            </div>
+        </div>
     {% endfor %}
 {% endblock %}

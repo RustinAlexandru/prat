@@ -2,3 +2,73 @@
 body {
     background: #efefef;
 }
+
+button {
+    outline: none !important;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.task-card {
+    background: #fff;
+    display: inline-block;
+    border-radius: 4px;
+    min-width: 150px;
+    margin: 10px 10px;
+    text-align: center;
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, .2);
+    overflow: hidden;
+
+    &.overdue {
+        .header {
+            background: #d64c4c;
+        }
+    }
+
+    &.completed {
+        .header {
+            background: #3e8f3e;
+        }
+    }
+
+    .header {
+        background: #28a4c9;
+        padding: 8px 10px;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    .footer {
+        padding: 0 10px 5px;
+    }
+
+    .task-button {
+        margin-top: 10px;
+        padding: 4px 10px 4px;
+        overflow: hidden;
+    }
+
+    h4 {
+        padding: 0;
+        margin: 0;
+        text-align: center;
+    }
+}
+
+/* Things */
+
+.coins {
+    vertical-align: middle;
+    display: inline-block;
+    background: url('/media/images/coin.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+
+    &.small {
+        width: 15px;
+        height: 15px;
+    }
+}
