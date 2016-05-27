@@ -16,7 +16,9 @@ def index(request):
         user_tasks = request.user.tasks.all()
         context = {
             "user": request.user,
-            "tasks": user_tasks
+            "tasks": user_tasks,
+            "completed_tasks": filter(lambda task: task.completed(), user_tasks),
+            "overdue_tasks": filter(lambda task: task.overdue(), user_tasks)
         }
         return render(request, 'index.html', context)
     else:
