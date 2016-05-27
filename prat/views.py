@@ -110,7 +110,8 @@ def view_task(request, pk):
         task = Task.objects.get(pk = pk)
         if task.owner == request.user:
             context = {
-                'task': task
+                'task': task,
+                'activity_length': range(task.activity_length())
             }
             return render(request, 'task_details.html', context)
         else:
