@@ -5,6 +5,7 @@
 
     {% if user == task.owner %}
         <a href="{% url 'editTask' task.pk %}" class="btn">Edit Task</a>
+        <a href="{% url 'deleteTask' task.pk %}" class="btn">Delete Task</a>
     {% endif %}
 
     <p> {{ task.category }} </p>

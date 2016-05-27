@@ -27,7 +27,7 @@
             </div>
         {% endif %}
     {% endfor %}
-    
+
     <h4>Completed Tasks</h4>
     {% for task in completed_tasks %}
         <div class="task-card completed">
@@ -56,9 +56,11 @@
                         Details
                     </button>
                 </a>
+                <a href="{% url 'restartTask' task.pk %}">
                 <button type="button" class="btn btn-success task-button">
                     Restart
                 </button>
+                </a>
             </div>
         </div>
     {% endfor %}

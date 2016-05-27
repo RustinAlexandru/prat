@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
-from prat.models import UserProfile, Task, Category
+from prat.models import UserProfile, Task, Category, UserTaskActivity
 
 # Prat Forms
 from prat.forms import EditProfileForm, UserRegisterForm, CreateTaskForm, \
@@ -142,6 +142,26 @@ def edit_task(request, pk):
             context = {'form': form}
             return render(request, 'edit_task.html', context)
         return redirect('viewTask', pk=pk)
+
+@login_required
+def delete_task(request, pk):
+    task = Task.objects.get(pk=pk)
+
+    if task.owner != request.user:
+        return redirect('index')
+
+    task.delete()
+    return redirect('index')
+
+@login_required
+def restart_task(request, pk):
+    task = Task.objects.get(pk=pk)
+
+    if task.owner != request.user:
+        return redirect('index')
+
+    activities = UserTaskActivity.objects.filter(task=task).filter(user=request.user).delete()
+    return redirect('index')
 
 @login_required
 def create_task(request):
