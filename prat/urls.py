@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^register/$', views.register, name='register'),
     url(r'^task/details/(?P<pk>\d+)/$', views.view_task, name='viewTask'),
     url(r'^task/edit/(?P<pk>\d+)/$', views.edit_task, name='editTask'),
+    url(r'^task/complete/(?P<pk>\d+)/$', views.complete_task, name='completeTask'),
     url(r'^profile/edit/$', views.edit_profile, name='editProfile'),
     url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.view_profile, name='viewProfile'),
     url(r'^profile/$', views.view_profile, name='viewProfile'),

@@ -24,6 +24,9 @@ class UserProfile(models.Model):
         ), blank = True, null = True)
     avatar = models.ImageField(upload_to = 'images/avatars/',
         default = 'images/avatars/no_avatar.jpg', blank = True, null = True)
+    points = models.IntegerField(default = 0, null = False)
+    experience = models.IntegerField(default = 0, null = False)
+    level = models.IntegerField(default = 1, null = False)
 
     # Relations
     user = models.OneToOneField(User, on_delete = models.CASCADE,
@@ -44,11 +47,11 @@ class Task(models.Model):
     experience_total = models.IntegerField(default = 0, null = False)
     experience_reward = models.IntegerField(default = 10, null = False)
     experience_sessions = models.IntegerField(default = 1, null = False)
-    experience_multiplier = models.FloatField(default = 1.2, null = False)
+    experience_multiplier = models.FloatField(default = .02, null = False)
     points_total = models.IntegerField(default = 0, null = False)
     points_reward = models.IntegerField(default = 1, null = False)
     points_sessions = models.IntegerField(default = 1, null = False)
-    points_multiplier = models.FloatField(default = 1, null = False)
+    points_multiplier = models.FloatField(default = 0.01, null = False)
     last_update = models.DateTimeField(auto_now_add = True, null = False)
     # more to come
 
@@ -70,12 +73,34 @@ class Task(models.Model):
     def overdue(self):
         task_activities = UserTaskActivity.objects.filter(task = self)
         if task_activities.count() == 0:
-            return True
+            return False
 
         last_activity = task_activities.reverse()[0]
         if (date.today() - last_activity.date_created.date()).days >= 2:
             return True
         return False
+
+    def activity_length(self):
+        if self.overdue():
+            print "[Task-ActivityLength] Overdue!"
+            return 0
+
+        task_activities = UserTaskActivity.objects.filter(task = self)
+        if task_activities.count() == 0:
+            print "[Task-ActivityLength] 0 Activity!"
+            return 0
+
+        last_date = date.today()
+        streak = 0
+        last_activities = task_activities.reverse()
+
+        for activity in last_activities:
+            if (last_date - activity.date_created.date()).days >= 2:
+                return streak
+            else:
+                last_date = activity.date_created.date()
+                streak = streak + 1
+        return streak
 
 
 

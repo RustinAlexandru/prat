@@ -53,6 +53,12 @@
                   <li><a href="{% url "logout" %}">Logout</a></li>
                 </ul>
               </li>
+              <li>
+                <a href="#">Level {{ user.profile.level }}</a>
+              </li>
+              <li>
+                <a href="#">{{ user.profile.points }} <i class="coins small"></i></a>
+              </li>
             </ul>
           {% else %}
             <ul class="nav navbar-nav navbar-right">
