@@ -34,6 +34,24 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return u'{} - {}'.format(self.user.username, self.first_name, self.last_name)
 
+    def giveExperience(self, exp):
+        self.experience = self.experience + exp
+        self.save()
+        self.checkLevel()
+
+    def checkLevel(self):
+        expNeeded = self.expNeeded()
+        if(self.experience >= expNeeded):
+            self.experience = self.experience - expNeeded
+            self.level = self.level + 1
+            self.save()
+
+    def expNeeded(self):
+        expNeeded = 100
+        for x in range(self.level - 1):
+            expNeeded *= 2
+        return expNeeded
+
 
 class Task(models.Model):
     """model class for a task, M-to-1 relationship with UserProfile model,

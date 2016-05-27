@@ -201,7 +201,7 @@ def complete_task(request, pk):
             experience = task.experience_reward * (1 + task.activity_length() * task.experience_multiplier)
 
             profile.points = profile.points + points
-            profile.experience = profile.experience + experience
+            profile.giveExperience(experience)
             profile.save()
 
             # Update task statistics
