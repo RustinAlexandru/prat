@@ -1,6 +1,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import date, timedelta
 
 # More
 import pytz
@@ -59,6 +60,25 @@ class Task(models.Model):
 
     def __unicode__(self):
         return u'{}'.format(self.name)
+
+    def omg(self):
+        return "Yes!"
+
+    def completed(self):
+        task_activities = UserTaskActivity.objects.filter(task = self, date_created__gte = date.today())
+        # dates = map(lambda x: x.date_created, task_activities)
+        # dates = map(lambda x: True if (date.today() - x.date()).days == 0 else False, dates)
+        return True if task_activities.count() > 0 else False
+
+    def overdue(self):
+        task_activities = UserTaskActivity.objects.filter(task = self, date_created__gte = date.today())
+        if task_activities.count() == 0:
+            return True
+
+        last_activity = task_activities.reverse()[0]
+        if (date.today() - last_activity.date_created.date()).days == 0:
+            return False
+        return True
 
 
 

@@ -9,6 +9,6 @@
 
   <h4>Your Tasks</h4>
   {% for task in tasks %}
-    <li><a href="{% url 'viewTask' task.pk %}"> {{ task.name }} </a></li>
+    <li><a href="{% url 'viewTask' task.pk %}"> {{ task.name }} - Completed today : {{ task.completed }} - Overdue : {{ task.overdue }} </a></li>
   {% endfor %}
 {% endblock %}
