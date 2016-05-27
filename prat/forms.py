@@ -1,8 +1,8 @@
-from django.forms import Form, ModelForm, CharField, Textarea, PasswordInput, \
-            ImageField, EmailField, ValidationError, ChoiceField, DateField, \
-            SelectDateWidget, ChoiceField
 from django.contrib.auth.models import User
-from prat.models import Task, Category, Ong
+from prat.models import Task, Category, Ong, UserGroup
+from django.forms import Form, ModelForm, CharField, PasswordInput, \
+    ImageField, EmailField, ValidationError, DateField, \
+    SelectDateWidget, ChoiceField
 
 
 class UserRegisterForm(Form):
@@ -80,3 +80,11 @@ class EditTaskForm(Form):
         choices=((ong.pk, ong.name) for ong in Ong.objects.all()),
         required = True
         )
+
+
+class CreateGroupForm(ModelForm):
+    class Meta:
+        model = UserGroup
+        fields = ['name', 'description', 'task']
+        error_messages = {
+        }

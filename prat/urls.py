@@ -14,11 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 
+from django.conf import settings
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
-from django.conf.urls.static import static
-from django.conf import settings
 
 # Import Views
 from . import views
@@ -37,6 +37,8 @@ urlpatterns = [
     url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.view_profile, name='viewProfile'),
     url(r'^profile/$', views.view_profile, name='viewProfile'),
     url(r'^task/create/$', views.create_task, name='createTask'),
+                  url(r'groups/$', views.view_groups, name='viewGroups'),
+                  url(r'groups/create', views.create_group, name='createGroup'),
     url(r'^$', views.index, name='index'),
     url(r'^ongs', views.view_ongs, name='ongList'),
     url(r'^ong/details/(?P<pk>\d+)/$', views.ong_details, name='ongDetails'),

@@ -1,11 +1,10 @@
+from datetime import date
 
-from django.db import models
 from django.contrib.auth.models import User
-from datetime import date, timedelta
+from django.db import models
+
 
 # More
-import pytz
-from timezone_field import TimeZoneField
 
 
 class UserProfile(models.Model):
@@ -32,6 +31,27 @@ class UserProfile(models.Model):
     # Relations
     user = models.OneToOneField(User, on_delete = models.CASCADE,
                     related_name = 'profile', verbose_name = 'user')
+
+    def __unicode__(self):
+        return u'{} - {}'.format(self.user.username, self.first_name, self.last_name)
+
+    def giveExperience(self, exp):
+        self.experience = self.experience + exp
+        self.save()
+        self.checkLevel()
+
+    def checkLevel(self):
+        expNeeded = self.expNeeded()
+        if(self.experience >= expNeeded):
+            self.experience = self.experience - expNeeded
+            self.level = self.level + 1
+            self.save()
+
+    def expNeeded(self):
+        expNeeded = 100
+        for x in range(self.level - 1):
+            expNeeded *= 2
+        return expNeeded
 
 
 class Task(models.Model):
@@ -65,7 +85,7 @@ class Task(models.Model):
                     null = True, on_delete = models.SET_NULL)
 
     def __unicode__(self):
-        return u'{}'.format(self.name)
+        return u'{} - {}'.format(self.name, self.owner.username)
 
     def completed(self):
         task_activities = UserTaskActivity.objects.filter(task = self, date_created__gte = date.today())
@@ -127,6 +147,8 @@ class UserGroup(models.Model):
 
     # Properties
     name = models.CharField(max_length = 100, null=False)
+    description = models.CharField(max_length=500, default="")
+
 
 
     # Relations
