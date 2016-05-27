@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block heading %}
+{% endblock %}
+
+{% block content %}
+	<h2 class="text-center"> Groups </h2>
+
+	<a href="{% url 'createGroup' %}">
+		<button type="button" class="btn btn-success task-button">
+			Create group
+		</button>
+	</a>
+
+	{% for group in group_users %}
+		<h2> {{ group.name }} </h2>
+		<h4> Group users </h4>
+		{% for user in group.users.all %}
+			<p> {{ user }} </p>
+		{% endfor %}
+	{% endfor %}
+
+{% endblock %}
