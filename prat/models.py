@@ -61,9 +61,6 @@ class Task(models.Model):
     def __unicode__(self):
         return u'{}'.format(self.name)
 
-    def omg(self):
-        return "Yes!"
-
     def completed(self):
         task_activities = UserTaskActivity.objects.filter(task = self, date_created__gte = date.today())
         # dates = map(lambda x: x.date_created, task_activities)
@@ -71,14 +68,14 @@ class Task(models.Model):
         return True if task_activities.count() > 0 else False
 
     def overdue(self):
-        task_activities = UserTaskActivity.objects.filter(task = self, date_created__gte = date.today())
+        task_activities = UserTaskActivity.objects.filter(task = self)
         if task_activities.count() == 0:
             return True
 
         last_activity = task_activities.reverse()[0]
-        if (date.today() - last_activity.date_created.date()).days == 0:
-            return False
-        return True
+        if (date.today() - last_activity.date_created.date()).days >= 2:
+            return True
+        return False
 
 
 
@@ -176,7 +173,7 @@ class UserTaskActivity(models.Model):
     """
 
     # Properties
-    date_created = models.DateTimeField(auto_now_add = True, null = False)
+    date_created = models.DateTimeField(auto_now_add = True, null = False, editable = True)
     experience_gained = models.IntegerField(default = 0, null = False)
     points_gained = models.IntegerField(default = 0, null = False)
 
@@ -185,3 +182,6 @@ class UserTaskActivity(models.Model):
                     on_delete = models.CASCADE)
     user = models.ForeignKey(User, verbose_name = 'user',
                     on_delete = models.CASCADE)
+
+    def __unicode__(self):
+        return u'{} - {} - {}'.format(self.user.username, self.task.name, self.date_created.date())
