@@ -1,15 +1,14 @@
-from django.http import HttpResponse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, permission_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
-from prat.models import UserProfile, Task, Category, UserTaskActivity
+from prat.models import UserProfile, Task, Category, UserTaskActivity, UserGroup
 
 # Prat Forms
 from prat.forms import EditProfileForm, UserRegisterForm, CreateTaskForm, \
-            EditTaskForm
+    EditTaskForm, CreateGroupForm
 
 def index(request):
     if request.user.is_authenticated():
@@ -110,7 +109,8 @@ def view_task(request, pk):
         task = Task.objects.get(pk = pk)
         if task.owner == request.user:
             context = {
-                'task': task
+                'task': task,
+                'activity_length': range(task.activity_length())
             }
             return render(request, 'task_details.html', context)
         else:
@@ -226,3 +226,43 @@ def complete_task(request, pk):
             return render(request, 'task_reward.html', context)
         else:
             return redirect('index')
+
+
+@login_required
+def view_groups(request):
+    if request.user.is_authenticated():
+        group_users = UserGroup.objects.all()
+        context = {'group_users': group_users}
+
+    return render(request, 'groups.html', context)
+
+
+@login_required
+def create_group(request):
+    if request.method == 'GET':
+        form = CreateGroupForm()
+        context = {
+            'form': form,
+        }
+        return render(request, 'create_group.html', context)
+    elif request.method == 'POST':
+        form = CreateGroupForm(request.POST)
+        user = request.user
+
+        if form.is_valid():
+            if form.cleaned_data['name']:
+                name = form.cleaned_data['name']
+            if form.cleaned_data['description']:
+                description = form.cleaned_data['description']
+            if form.cleaned_data['task']:
+                task = form.cleaned_data['task']
+
+            group = UserGroup.objects.create(name=name, description=description,
+                                             task=task)
+            group.users.clear()
+            group.users.add(user)
+            group.save()
+        else:
+            context = {'form': form}
+            return render(request, 'create_group.html', context)
+        return redirect('viewGroups')

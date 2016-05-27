@@ -1,11 +1,10 @@
+from datetime import date
 
-from django.db import models
 from django.contrib.auth.models import User
-from datetime import date, timedelta
+from django.db import models
+
 
 # More
-import pytz
-from timezone_field import TimeZoneField
 
 class UserProfile(models.Model):
     """model class for a user profile, 1-to-1 relationship with User model,
@@ -128,6 +127,8 @@ class UserGroup(models.Model):
 
     # Properties
     name = models.CharField(max_length = 100, null=False)
+    description = models.CharField(max_length=500, default="")
+
 
 
     # Relations
