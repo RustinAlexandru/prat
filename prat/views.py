@@ -187,3 +187,42 @@ def create_task(request):
             context = {'form': form}
             return render(request, 'create_task.html', context)
         return redirect('index')
+
+@login_required
+def complete_task(request, pk):
+    if request.method == 'GET':
+        task = Task.objects.get(pk = pk)
+        if task.owner == request.user and task.completed() is False:
+            user = request.user
+            profile = user.profile
+
+            # Calculate points & experience gained
+            points = task.points_reward * (1 + task.activity_length() * task.points_multiplier)
+            experience = task.experience_reward * (1 + task.activity_length() * task.experience_multiplier)
+
+            profile.points = profile.points + points
+            profile.experience = profile.experience + experience
+            profile.save()
+
+            # Update task statistics
+            task.points_total = task.points_total + points
+            task.experience_total = task.experience_total + experience
+            task.sessions_total = task.sessions_total + 1
+            if (task.activity_length() + 1) > task.sessions_record:
+                task.sessions_record = task.activity_length() + 1
+            task.save()
+
+            # Create UserTaskActivity
+            activity = UserTaskActivity.objects.create(task=task, user=user)
+            activity.experience_gained = experience
+            activity.points_gained = points
+            activity.save()
+
+            context = {
+                'task': task,
+                'experience': experience,
+                'points': points
+            }
+            return render(request, 'task_reward.html', context)
+        else:
+            return redirect('index')

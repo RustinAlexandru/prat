@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="reward-screen">
+        <h3>You've completed <b>{{ task.name }}</b></h3>
+
+        <h4>You've earned:</h4>
+        <div class="rewards">
+            <ul>
+                <li>+{{ experience }} Experience Points</li>
+                <li>+{{ points }} Coins</li>
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}
