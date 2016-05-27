@@ -32,6 +32,9 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete = models.CASCADE,
                     related_name = 'profile', verbose_name = 'user')
 
+    def __unicode__(self):
+        return u'{} - {}'.format(self.user.username, self.first_name, self.last_name)
+
 
 class Task(models.Model):
     """model class for a task, M-to-1 relationship with UserProfile model,
@@ -62,7 +65,7 @@ class Task(models.Model):
                     related_name = 'tasks', on_delete = models.CASCADE)
 
     def __unicode__(self):
-        return u'{}'.format(self.name)
+        return u'{} - {}'.format(self.name, self.owner.username)
 
     def completed(self):
         task_activities = UserTaskActivity.objects.filter(task = self, date_created__gte = date.today())
