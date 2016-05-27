@@ -8,7 +8,10 @@
         <a href="{% url 'deleteTask' task.pk %}" class="btn">Delete Task</a>
     {% endif %}
 
-    <p> {{ task.category }} </p>
+    <p> Category: {{ task.category }} </p>
+    {% if task.ong %}
+    <p> Ong to donate to: <a href="{% url 'ongDetails' task.ong.pk %}"> {{ task.ong }} </a> </p>
+    {% endif %}
     {% for counter in activity_length %}
         <div style="height: 50px; width: 50px; background-color: red"></div>
         </br>

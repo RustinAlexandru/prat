@@ -7,6 +7,7 @@ from datetime import date, timedelta
 import pytz
 from timezone_field import TimeZoneField
 
+
 class UserProfile(models.Model):
     """model class for a user profile, 1-to-1 relationship with User model,
        stores additional information about a user (timezone, language,
@@ -60,6 +61,8 @@ class Task(models.Model):
                     related_name = 'tasks', on_delete = models.CASCADE)
     owner = models.ForeignKey(User, verbose_name = 'owner',
                     related_name = 'tasks', on_delete = models.CASCADE)
+    ong = models.ForeignKey('Ong', verbose_name = 'ONG', related_name = 'tasks',
+                    null = True, on_delete = models.SET_NULL)
 
     def __unicode__(self):
         return u'{}'.format(self.name)
@@ -103,7 +106,6 @@ class Task(models.Model):
         return streak
 
 
-
 class PredefinedTask(models.Model):
     """model class for predefined tasks, M-to-1 relationship with Category model,
        a set of predefined tasks (ex: workout, floss, take vitamins)
@@ -131,6 +133,7 @@ class UserGroup(models.Model):
     task = models.OneToOneField('Task', related_name = 'group',
                     verbose_name = 'task', null = False)
     users = models.ManyToManyField(User) # might do a through model
+
 
 class UserGroupComment(models.Model):
     """model class for a comment on a group chat, M-to-1 relationship with
@@ -192,6 +195,7 @@ class Category(models.Model):
     def __unicode__(self):
         return u'{}'.format(self.name)
 
+
 class UserTaskActivity(models.Model):
     """model class for a user-task activity, M-to-1 relationship with Task model,
        tracks daily progress for a user's task
@@ -210,3 +214,13 @@ class UserTaskActivity(models.Model):
 
     def __unicode__(self):
         return u'{} - {} - {}'.format(self.user.username, self.task.name, self.date_created.date())
+
+
+class Ong(models.Model):
+    """ Ongs to which donations, from points achieved by users, will go"""
+
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=500)
+
+    def __unicode__(self):
+        return u'{}'.format(self.name)

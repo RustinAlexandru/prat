@@ -38,5 +38,7 @@ urlpatterns = [
     url(r'^profile/$', views.view_profile, name='viewProfile'),
     url(r'^task/create/$', views.create_task, name='createTask'),
     url(r'^$', views.index, name='index'),
+    url(r'^ongs', views.view_ongs, name='ongList'),
+    url(r'^ong/details/(?P<pk>\d+)/$', views.ong_details, name='ongDetails'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

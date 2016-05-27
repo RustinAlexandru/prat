@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
-from prat.models import UserProfile, Task, Category, UserTaskActivity
+from prat.models import UserProfile, Task, Category, UserTaskActivity, Ong
 
 # Prat Forms
 from prat.forms import EditProfileForm, UserRegisterForm, CreateTaskForm, \
@@ -138,6 +138,9 @@ def edit_task(request, pk):
             if form.cleaned_data['category']:
                 task_pk = form.cleaned_data['category']
                 task.category = Category.objects.get(pk = task_pk)
+            if form.cleaned_data['ong']:
+                ong_pk = form.cleaned_data['ong']
+                task.ong = Ong.objects.get(pk = ong_pk)
             task.save()
         else:
             context = {'form': form}
@@ -181,8 +184,10 @@ def create_task(request):
                 name = form.cleaned_data['name']
             if form.cleaned_data['category']:
                 category = form.cleaned_data['category']
+            if form.cleaned_data['ong']:
+                ong = form.cleaned_data['ong']
             task = Task.objects.create(name = name, category = category,
-                                       owner = user)
+                                       owner = user, ong = ong)
             task.save()
         else:
             context = {'form': form}
@@ -227,3 +232,13 @@ def complete_task(request, pk):
             return render(request, 'task_reward.html', context)
         else:
             return redirect('index')
+
+def view_ongs(request):
+    ong_list = Ong.objects.all()
+    context = {'ong_list': ong_list}
+    return render(request, 'all_ongs.html', context)
+
+def ong_details(request, pk):
+    ong = Ong.objects.get(pk=pk)
+    context = {'ong': ong}
+    return render(request, 'ong_details.html', context)
