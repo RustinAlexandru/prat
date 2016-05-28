@@ -14,11 +14,16 @@ from prat.forms import (EditProfileForm, UserRegisterForm, CreateTaskForm,
 def index(request):
     if request.user.is_authenticated():
         user_tasks = request.user.tasks.all()
+        completed_tasks = filter(lambda task: task.completed(), user_tasks)
+        overdue_tasks = filter(lambda task: task.overdue(), user_tasks)
         context = {
             "user": request.user,
             "tasks": user_tasks,
-            "completed_tasks": filter(lambda task: task.completed(), user_tasks),
-            "overdue_tasks": filter(lambda task: task.overdue(), user_tasks)
+            "completed_tasks": completed_tasks,
+            "overdue_tasks": overdue_tasks,
+            "today_tasks_no": len(user_tasks) - len(completed_tasks) - len(overdue_tasks),
+            "completed_tasks_no": len(completed_tasks),
+            "overdue_tasks_no": len(overdue_tasks)
         }
         return render(request, 'index.html', context)
     else:
@@ -111,6 +116,7 @@ def view_task(request, pk):
         if task.owner == request.user:
             context = {
                 'task': task,
+                'activity_len_count': task.activity_length(),
                 'activity_length': range(task.activity_length())
             }
             return render(request, 'task_details.html', context)

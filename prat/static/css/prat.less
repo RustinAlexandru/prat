@@ -1,6 +1,6 @@
 
 body {
-    background: #efefef;
+    background: #ddd;
 }
 
 button {
@@ -9,6 +9,140 @@ button {
 
 a:hover {
     text-decoration: none;
+}
+
+.task-details-panel {
+    margin-top: 50px;
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.3);
+
+    a {
+        color: #ddd;
+        font-size: 14px;
+
+        &:hover, &:active, &:focus{
+            color: #fff;
+        }
+    }
+
+    .header {
+        background: #22262d;
+        height: 60px;
+        box-sizing: border-box;
+        position: relative;
+
+        .left, .right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .left {
+            left: 20px;
+        }
+
+        .right {
+            right: 20px;
+        }
+
+        h4 {
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            color: white;
+
+            small {
+                margin: 0 8px;
+            }
+        }
+
+        .details {
+            display: inline-block;
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+            color: #aaa;
+        }
+    }
+
+    .content {
+        overflow: hidden;
+        background: #fff;
+        padding: 5px 15px;
+        box-sizing: border-box;
+
+        h2 {
+            padding: 0;
+            margin: 10px 0;
+        }
+    }
+    
+}
+
+.home-showcase-panel {
+    margin: 20px 0;
+    box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.3);
+
+    a {
+        color: #ddd;
+        font-size: 14px;
+
+        &:hover, &:active, &:focus{
+            color: #fff;
+        }
+    }
+
+    .panel-header {
+        background: #22262d;
+        height: 60px;
+        box-sizing: border-box;
+        position: relative;
+
+        .left, .right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .left {
+            left: 20px;
+        }
+
+        .right {
+            right: 20px;
+        }
+
+        h4 {
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+            color: white;
+
+            small {
+                margin: 0 8px;
+            }
+        }
+
+        .details {
+            display: inline-block;
+            padding: 0;
+            margin: 0;
+            font-size: 12px;
+            color: #aaa;
+        }
+    }
+
+    .content {
+        overflow: hidden;
+        background: #fff;
+        padding: 5px 15px;
+        box-sizing: border-box;
+
+        h2 {
+            padding: 0;
+            margin: 10px 0;
+        }
+    }
+    
 }
 
 .task-card {
