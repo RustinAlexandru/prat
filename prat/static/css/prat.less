@@ -12,17 +12,10 @@ a:hover {
 }
 
 .task-details-panel {
-    margin-top: 50px;
+    margin: 20px 0;
     box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.3);
 
-    a {
-        color: #ddd;
-        font-size: 14px;
-
-        &:hover, &:active, &:focus{
-            color: #fff;
-        }
-    }
+    
 
     .header {
         background: #22262d;
@@ -62,6 +55,15 @@ a:hover {
             font-size: 12px;
             color: #aaa;
         }
+
+        a {
+            color: #ddd;
+            font-size: 14px;
+
+            &:hover, &:active, &:focus{
+                color: #fff;
+            }
+        }
     }
 
     .content {
@@ -69,6 +71,17 @@ a:hover {
         background: #fff;
         padding: 5px 15px;
         box-sizing: border-box;
+
+        a {
+            color: #555;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: underline;
+
+            &:hover, &:active, &:focus{
+                color: #333;
+            }
+        }
 
         h2 {
             padding: 0;
@@ -154,6 +167,7 @@ a:hover {
     text-align: center;
     box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, .2);
     overflow: hidden;
+    max-width: 200px;
 
     &.overdue {
         .header {
@@ -172,6 +186,12 @@ a:hover {
         padding: 8px 10px;
         color: white;
         text-transform: uppercase;
+
+        h4 {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     }
 
     .footer {

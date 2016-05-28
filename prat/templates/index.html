@@ -1,12 +1,11 @@
 {% extends 'layout.html' %}
 
 {% block heading %}
-    <h2>Welcome to <em>Prat</em></h2>
 {% endblock %}
 
 {% block content %}
-    <a href="{% url 'createTask' %}" class="btn btn-info" role="button"> Create task </a>
 
+    {% if overdue_tasks_no > 0 %}
     <div class="home-showcase-panel">
         <div class="panel-header">
             <div class="left">
@@ -43,7 +42,9 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
 
+    {% if today_tasks_no > 0 %}
     <div class="home-showcase-panel">
         <div class="panel-header">
             <div class="left">
@@ -83,7 +84,9 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
 
+    {% if completed_tasks_no > 0 %}
     <div class="home-showcase-panel">
         <div class="panel-header">
             <div class="left">
@@ -110,5 +113,6 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
     
 {% endblock %}
