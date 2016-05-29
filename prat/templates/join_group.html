@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block heading %}
+	<h2> {{ group.title }}</h2>
+{% endblock %}
+
+{% block content %}
+	<div class="join_group">
+		<p class="error">{{ message }}</p>
+		<form method="post">
+			{% csrf_token %}
+			{{ form.as_p }}
+			<button type="submit">Join group</button>
+		</form>
+	</div>
+
+{% endblock %}

@@ -149,11 +149,7 @@ class UserGroup(models.Model):
     name = models.CharField(max_length = 100, null=False)
     description = models.CharField(max_length=500, default="")
 
-
-
     # Relations
-    # task = models.OneToOneField('Task', related_name = 'group',
-    #                 verbose_name = 'task', null = False)
     members = models.ManyToManyField(User,
                                      through='UserGroupMembership')  # might do a through model
 
@@ -162,14 +158,13 @@ class UserGroup(models.Model):
 
 
 class UserGroupMembership(models.Model):
-    user = models.ForeignKey(User)
-    user_group_task = models.OneToOneField(Task, null=True)
-    group = models.ForeignKey(UserGroup)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_group_task = models.ForeignKey(Task, null=True)
+    group = models.ForeignKey(UserGroup, on_delete=models.CASCADE)
     date_joined = models.DateField()
 
     class Meta:
         unique_together = (('user', 'user_group_task', 'group'))
-
 
 
 class UserGroupComment(models.Model):

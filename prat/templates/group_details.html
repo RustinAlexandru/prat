@@ -5,7 +5,11 @@
 {% endblock %}
 
 {% block content %}
-	{#<a href="{% url  joinGroup %}"> <h2>Join group</h2> </a>#}
+
+	{% if user not in group_users %}
+		<a href="{% url  'joinGroup' group_pk %}"><h2>Join group</h2></a>
+	{% else %}
+	{% endif %}
 
 	<textarea id="comment"> </textarea>
 	{#	<a href="{% url 'addComment' %}">#}

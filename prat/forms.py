@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
-from prat.models import Task, Category, Ong, UserGroup
 from django.forms import Form, ModelForm, CharField, PasswordInput, \
     ImageField, EmailField, ValidationError, DateField, \
     SelectDateWidget, ChoiceField
+
+from prat.models import Task, Category, Ong, UserGroup, UserGroupMembership
 
 
 class UserRegisterForm(Form):
@@ -87,4 +88,23 @@ class CreateGroupForm(ModelForm):
         model = UserGroup
         fields = ['name', 'description']
         error_messages = {
+        }
+
+
+class JoinGroup(ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(JoinGroup, self).__init__(*args, **kwargs)
+        self.fields['user_group_task'].queryset = Task.objects.filter(
+            owner=user)
+
+    class Meta:
+        model = UserGroupMembership
+        fields = ['user_group_task']
+        labels = {
+            'user_group_task': "Select which one of your chains you'd like to add to this group."
+        }
+        error_messages = {
+            'user_group_task': {
+                'unique': ("You can't join with the same task! "),
+            }
         }

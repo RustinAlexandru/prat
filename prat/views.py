@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 
@@ -12,7 +13,9 @@ from prat.models import UserProfile, Task, Category, UserTaskActivity, \
 
 # Prat Forms
 from prat.forms import (EditProfileForm, UserRegisterForm, CreateTaskForm,
-    EditTaskForm, CreateGroupForm)
+                        EditTaskForm, CreateGroupForm, JoinGroup)
+
+import datetime
 
 def index(request):
     if request.user.is_authenticated():
@@ -287,9 +290,8 @@ def create_group(request):
             if form.cleaned_data['description']:
                 description = form.cleaned_data['description']
 
-            group = UserGroup.objects.create(name=name, description=description
-                                             )
-            group.save()
+            UserGroup.objects.create(name=name, description=description
+                                     )
         else:
             context = {'form': form}
             return render(request, 'create_group.html', context)
@@ -300,14 +302,52 @@ def create_group(request):
 def group_details(request, pk):
     user = request.user
     group = UserGroup.objects.get(pk=pk)
-    group_users = group.members.all()
+    group_users = group.members.all().distinct()
     group_tasks = []
     for user in group_users:
-        group_membership = UserGroupMembership.objects.get(user=user)
+        group_membership = UserGroupMembership.objects.filter(user=user).filter(
+            group=group).first()
         group_tasks.append(group_membership.user_group_task)
 
     context = {
         'group_users': group_users,
         'group_tasks': group_tasks,
+        'group_pk': group.pk
     }
     return render(request, 'group_details.html', context)
+
+
+@login_required
+def join_group(request, pk):
+    group = UserGroup.objects.get(pk=pk)
+    group_users = group.members.all()
+
+    # cannot join group twice
+    if request.user in group_users:
+        return redirect(reverse('groupDetails', kwargs={'pk': pk}))
+
+    if request.method == 'GET':
+        form = JoinGroup(request.user)
+        context = {
+            'form': form,
+        }
+        return render(request, 'join_group.html', context)
+    elif request.method == 'POST':
+        # if request.session.get('join', False):
+        #     return HttpResponse("You've already joined this group!")
+        form = JoinGroup(request.user, request.POST)
+        user = request.user
+        group = UserGroup.objects.get(pk=pk)
+        if form.is_valid():
+            if form.cleaned_data['user_group_task']:
+                user_group_task = form.cleaned_data['user_group_task']
+
+            UserGroupMembership.objects.create(group=group, user=user,
+                                               date_joined=datetime.date.today(),
+                                               user_group_task=user_group_task)
+
+        else:
+            context = {'form': form}
+            return render(request, 'join_group.html', context)
+        # request.session['join'] = 'True'
+        return redirect(reverse('groupDetails', kwargs={'pk': pk}))
