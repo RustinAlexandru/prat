@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User
-from prat.models import Task, Category, Ong, UserGroup
+from prat.models import Task, Category, Ong, UserGroup, Theme, UserThemes
 from django.forms import Form, ModelForm, CharField, PasswordInput, \
     ImageField, EmailField, ValidationError, DateField, \
-    SelectDateWidget, ChoiceField
+    SelectDateWidget, ChoiceField, ModelChoiceField
 
 
 class UserRegisterForm(Form):
@@ -80,6 +80,21 @@ class EditTaskForm(Form):
         choices=((ong.pk, ong.name) for ong in Ong.objects.all()),
         required = True
         )
+    theme = ModelChoiceField(queryset=Theme.objects.all())
+
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+
+        default_theme = Theme.objects.filter(className='default').first()
+        bought_themes = UserThemes.objects.filter(user=request.user)
+        available_themes = []
+        available_themes.append((default_theme.pk, default_theme.name))
+        for bought_theme in bought_themes:
+            theme = bought_theme.theme
+            available_themes.append((theme.pk, theme.name))
+
+        super(EditTaskForm, self).__init__(*args, **kwargs)
+        self.fields['theme'] = ChoiceField(choices = available_themes)
 
 
 class CreateGroupForm(ModelForm):

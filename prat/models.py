@@ -83,6 +83,7 @@ class Task(models.Model):
                     related_name = 'tasks', on_delete = models.CASCADE)
     ong = models.ForeignKey('Ong', verbose_name = 'ONG', related_name = 'tasks',
                     null = True, on_delete = models.SET_NULL)
+    theme = models.ForeignKey('Theme', verbose_name = 'theme', null = True)
 
     def __unicode__(self):
         return u'{} - {}'.format(self.name, self.owner.username)
@@ -200,6 +201,9 @@ class Theme(models.Model):
 
     # Properties
     name = models.CharField(max_length = 100)
+    className = models.CharField(max_length = 100, default = 'default', null = False)
+    def __unicode__(self):
+        return u'{} @ {}'.format(self.name, self.className)
 
 
 class UserThemes(models.Model):

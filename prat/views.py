@@ -11,7 +11,7 @@ from django.shortcuts import redirect, render
 # Prat Models
 from django.contrib.auth.models import User
 from prat.models import UserProfile, Task, Category, UserTaskActivity, \
-    UserGroup, UserGroupMembership, Ong
+    UserGroup, UserGroupMembership, Ong, Theme
 
 # Prat Forms
 from prat.forms import (EditProfileForm, UserRegisterForm, CreateTaskForm,
@@ -150,13 +150,14 @@ def edit_task(request, pk):
         return redirect('index')
 
     if request.method == 'GET':
-        form = EditTaskForm()
+        form = EditTaskForm(request)
+        print form
         context = {
             'form': form,
         }
         return render(request, 'edit_task.html', context)
     elif request.method ==  'POST':
-        form = EditTaskForm(request.POST)
+        form = EditTaskForm(request, request.POST)
 
         if form.is_valid():
             if form.cleaned_data['name']:
@@ -167,6 +168,9 @@ def edit_task(request, pk):
             if form.cleaned_data['ong']:
                 ong_pk = form.cleaned_data['ong']
                 task.ong = Ong.objects.get(pk = ong_pk)
+            if form.cleaned_data['theme']:
+                theme_pk = form.cleaned_data['theme']
+                task.theme = Theme.objects.get(pk = theme_pk)
             task.save()
         else:
             context = {'form': form}

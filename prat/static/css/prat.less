@@ -283,6 +283,20 @@ a:hover {
 
 .chain {
 
+    &.nospace {
+        .chain-row {
+            margin: 0 !important;
+        }
+
+        .cell-chain {
+            &.empty {
+                width: 30px;
+                height: 30px;
+                margin: 0px 5px;
+            }
+        }
+    }
+
     .chain-row {
         margin-bottom: 5px;
 
@@ -316,7 +330,7 @@ a:hover {
         margin: 0;
 
         &.full {
-            background: rgba(0, 0, 0, .1);
+            // background: rgba(0, 0, 0, .1);
             // : AFTER -> img
         }
 
@@ -326,6 +340,31 @@ a:hover {
             margin: 10px 5px;
             border-radius: 100%;
             background: rgba(0, 0, 0, .5);
+            box-shadow: inset 0px 2px 0px 1px rgba(0, 0, 0, .2);
+        }
+    }
+}
+
+/* Themes */
+.chain {
+
+    .full {
+        &:before {
+            content: '';
+            display: block;
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-repeat: no-repeat;
+            background: url('/media/images/themes/default.png');
+            background-size: cover;
+        }
+    }
+
+    &.guitar {
+        .full:before {
+            background: url('/media/images/themes/guitarpick.png');
+            background-size: cover;
         }
     }
 }

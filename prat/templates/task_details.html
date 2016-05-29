@@ -23,7 +23,7 @@
             {% endif %}
 
             <h2>ChainStreak</h2>
-            <div class="chain">
+            <div class="chain {{ task.theme.className }}">
                 {% for elem in chain %}
                     {% if elem.task %}
                         <div class="chain-row">
