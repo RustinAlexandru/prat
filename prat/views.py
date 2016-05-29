@@ -379,7 +379,7 @@ def view_tops(request, choice = None):
         if not choice:
             return render(request, 'tops.html', context)
         elif choice == 'general':
-            general_top = UserProfile.objects.order_by('level', 'experience')[:100]
+            general_top = UserProfile.objects.order_by('-level', '-experience')[:100]
             context['general_top'] = general_top
             return render(request, 'tops.html', context)
     elif request.method ==  'POST' and choice == 'category':
