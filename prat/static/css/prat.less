@@ -226,3 +226,57 @@ a:hover {
         height: 15px;
     }
 }
+
+.overlay {
+    position: fixed;
+    background: rgba(0, 0, 0, .2);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+
+    &.active {
+        display: block;
+    }
+
+    .single {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
+
+    .modal-task-completed {
+        min-width: 200px;
+        border-radius: 4px;
+        overflow: hidden;
+
+        .modal-header {
+            background: #22262d;
+
+            h4 {
+                padding: 0;
+                margin: 0;
+                color: white;
+            }
+        }
+
+        background: #fff;
+        box-sizing: border-box;
+        text-align: center;
+
+        .header {
+            padding: 10px 20px;
+        }
+
+        .content {
+            padding: 10px 20px;
+        }
+    }
+}

@@ -1,6 +1,9 @@
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.core import serializers
+from django.http import HttpResponse
+import json
 
 # Prat Models
 from django.contrib.auth.models import User
@@ -212,6 +215,12 @@ def complete_task(request, pk):
             points = task.points_reward * (1 + task.activity_length() * task.points_multiplier)
             experience = task.experience_reward * (1 + task.activity_length() * task.experience_multiplier)
 
+            data = {
+                'task': task.name,
+                'experience': experience,
+                'points': points
+            }
+
             profile.points = profile.points + points
             profile.giveExperience(experience)
             profile.save()
@@ -230,12 +239,15 @@ def complete_task(request, pk):
             activity.points_gained = points
             activity.save()
 
-            context = {
-                'task': task,
-                'experience': experience,
-                'points': points
-            }
-            return render(request, 'task_reward.html', context)
+            data = json.dumps(data)
+            return HttpResponse(data, content_type='application/json')
+            
+            # context = {
+            #     'task': task,
+            #     'experience': experience,
+            #     'points': points
+            # }
+            # return render(request, 'task_reward.html', context)
         else:
             return redirect('index')
 

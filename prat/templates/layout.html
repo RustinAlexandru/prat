@@ -80,9 +80,25 @@
         </div>
       </div>
 
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-      <script>window.jQuery || document.write('<script src="{% static "js/vendor/jquery-1.11.2.min.js" %}"><\/script>')</script>
+      <div class="overlay">
+        <div class="single modal-task-completed">
+          <div class="modal-header">
+            <h4 class="task-name">Task Name</h4>
+          </div>
+          <div class="content">
+            <div class="details">
+            </div>
+            <div class="action">
+              <button type="button" class="btn btn-success" onclick="hideModal('modal-task-completed')">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="{% static "js/vendor/jquery-1.11.2.min.js" %}"></script>
       <script src="{% static "js/vendor/bootstrap.min.js" %}"></script>
       <script src="{% static "js/main.js" %}"></script>
+
+      {% block scripts %}{% endblock %}
     </body>
 </html>
