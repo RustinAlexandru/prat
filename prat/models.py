@@ -83,6 +83,7 @@ class Task(models.Model):
                     related_name = 'tasks', on_delete = models.CASCADE)
     ong = models.ForeignKey('Ong', verbose_name = 'ONG', related_name = 'tasks',
                     null = True, on_delete = models.SET_NULL)
+    theme = models.ForeignKey('Theme', verbose_name = 'theme', null = True)
 
     def __unicode__(self):
         return u'{} - {}'.format(self.name, self.owner.username)
@@ -195,6 +196,14 @@ class Theme(models.Model):
 
     # Properties
     name = models.CharField(max_length = 100)
+    price = models.IntegerField(default = 0, null = False)
+    description = models.CharField(max_length = 500, blank = True, null = True)
+    class_name = models.CharField(max_length = 100, default = 'default', null = False)
+    image = models.ImageField(upload_to = 'images/themes/',
+        default = 'images/theme/no_theme.jpg', blank = True, null = True)
+
+    def __unicode__(self):
+        return u'{} @ {}'.format(self.name, self.class_name)
 
 
 class UserThemes(models.Model):
@@ -204,8 +213,11 @@ class UserThemes(models.Model):
     """
 
     # Relations
-    theme = models.ForeignKey('Theme', on_delete = models.CASCADE)
+    theme = models.ForeignKey(Theme, on_delete = models.CASCADE)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
+
+    def __unicode__(self):
+        return u'{} @ {}'.format(self.user.username, self.theme.name)
 
 
 class Achievement(models.Model):

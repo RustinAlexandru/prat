@@ -1,9 +1,11 @@
 from django.contrib.auth.models import User
-from django.forms import Form, ModelForm, CharField, PasswordInput, \
-    ImageField, EmailField, ValidationError, DateField, \
-    SelectDateWidget, ChoiceField
 
-from prat.models import Task, Category, Ong, UserGroup, UserGroupMembership
+from django.forms import (Form, ModelForm, CharField, PasswordInput,
+    ImageField, EmailField, ValidationError, DateField,
+    SelectDateWidget, ChoiceField, ModelChoiceField)
+
+from prat.models import (Task, Category, Ong, UserGroup, UserGroupMembership,
+    Theme, UserThemes)
 
 
 class UserRegisterForm(Form):
@@ -81,6 +83,21 @@ class EditTaskForm(Form):
         choices=((ong.pk, ong.name) for ong in Ong.objects.all()),
         required = True
         )
+    theme = ModelChoiceField(queryset=Theme.objects.all())
+
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+
+        default_theme = Theme.objects.filter(name='Default').first()
+        bought_themes = UserThemes.objects.filter(user=request.user)
+        available_themes = []
+        available_themes.append((default_theme.pk, default_theme.name))
+        for bought_theme in bought_themes:
+            theme = bought_theme.theme
+            available_themes.append((theme.pk, theme.name))
+
+        super(EditTaskForm, self).__init__(*args, **kwargs)
+        self.fields['theme'] = ChoiceField(choices = available_themes)
 
 
 class CreateGroupForm(ModelForm):
@@ -108,3 +125,9 @@ class JoinGroup(ModelForm):
                 'unique': ("You can't join with the same task! "),
             }
         }
+
+
+class ShowCategoryTopForm(Form):
+    category = ChoiceField(
+        choices=([(None, '')] + [(cat.pk, cat.name) for cat in Category.objects.all()]),
+        required=True)

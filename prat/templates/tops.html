@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block content%}
+    <h3 id="general_top"><a href="{% url 'viewTops' 'general' %}">General Top</a></h3>
+
+    {% for profile in general_top %}
+        <div><a href="{% url 'viewProfile' profile.user.username %}">{{ profile.first_name }} {{ profile.last_name }}</a></div>
+    {% endfor %}
+
+    <h3>Top by Category</h3>
+    <p class="error">{{ message }}</p>
+        <form method="post" action="{% url 'viewTops' 'category' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Show me</button>
+        </form>
+
+    </br>
+    {% for user in category_top %}
+        <div><a href="{% url 'viewProfile' user.username %}">{{ user.profile.first_name }} {{ user.profile.last_name }}</a></div>
+    {% endfor %}
+{% endblock %}

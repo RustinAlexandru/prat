@@ -23,9 +23,46 @@
             {% endif %}
 
             <h2>ChainStreak</h2>
-            {% for counter in activity_length %}
-                <div style="height: 20px; width: 50px; background-color: red; margin-bottom: 5px;"></div>
-            {% endfor %}
+            <div class="chain {{ task.theme.class_name }}">
+                {% for elem in chain %}
+                    {% if elem.task %}
+                        <div class="chain-row">
+                            <span class="date-span">
+                                <span class="day">{{ elem.date_created.date.day }}</span>
+                                <span class="month">{{ elem.date_created.date.month }}</span>
+                            </span>
+                            <div class="cell-chain full"></div>
+                        </div>
+                    {% else %}
+                        <div class="chain-row">
+                            <span class="date-span">
+                                <span class="day">{{ elem.date.day }}</span>
+                                <span class="month">{{ elem.date.month }}</span>
+                            </span>
+                            <div class="cell-chain empty"></div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+
+        function intToMonth(monthInt) {
+            var month = ['January', 'February', 'March', 'April', 'May', 'June',
+                         'July', 'August', 'September', 'October', 'November', 'December'];
+            return month[monthInt - 1];
+        }
+
+        $(document).ready(function() {
+            var months = $("span.month");
+            for (var i = 0; i < months.length; i++) {
+                var month = $(months[i]);
+                month.text(intToMonth((month.text())));
+            }
+        });
+    </script>
 {% endblock %}

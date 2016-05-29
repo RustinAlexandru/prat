@@ -4,18 +4,20 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
+from datetime import date
+import datetime
+import json
 from django.shortcuts import redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
-from prat.models import UserProfile, Task, Category, UserTaskActivity, \
-    UserGroup, UserGroupMembership, Ong
+from prat.models import (UserProfile, Task, Category, UserTaskActivity,
+    UserGroup, UserGroupMembership, Ong, Theme, UserThemes)
 
 # Prat Forms
 from prat.forms import (EditProfileForm, UserRegisterForm, CreateTaskForm,
-                        EditTaskForm, CreateGroupForm, JoinGroup)
+    EditTaskForm, CreateGroupForm, JoinGroup, ShowCategoryTopForm)
 
-import datetime
 
 def index(request):
     if request.user.is_authenticated():
@@ -120,10 +122,24 @@ def view_task(request, pk):
     if request.method == 'GET':
         task = Task.objects.get(pk = pk)
         if task.owner == request.user:
+
+            today  = date.today()
+            chain = []
+            for i in range(0, 31):
+                day = today - datetime.timedelta(days=i)
+                activity = UserTaskActivity.objects.filter(task = task, date_created__contains = day).first()
+                if activity is None:
+                    activity = {
+                        'date': day
+                    }
+
+                chain.append(activity)
+
             context = {
                 'task': task,
                 'activity_len_count': task.activity_length(),
-                'activity_length': range(task.activity_length())
+                'activity_length': range(task.activity_length()),
+                'chain': chain
             }
             return render(request, 'task_details.html', context)
         else:
@@ -136,13 +152,14 @@ def edit_task(request, pk):
         return redirect('index')
 
     if request.method == 'GET':
-        form = EditTaskForm()
+        form = EditTaskForm(request)
+        print form
         context = {
             'form': form,
         }
         return render(request, 'edit_task.html', context)
     elif request.method ==  'POST':
-        form = EditTaskForm(request.POST)
+        form = EditTaskForm(request, request.POST)
 
         if form.is_valid():
             if form.cleaned_data['name']:
@@ -153,6 +170,9 @@ def edit_task(request, pk):
             if form.cleaned_data['ong']:
                 ong_pk = form.cleaned_data['ong']
                 task.ong = Ong.objects.get(pk = ong_pk)
+            if form.cleaned_data['theme']:
+                theme_pk = form.cleaned_data['theme']
+                task.theme = Theme.objects.get(pk = theme_pk)
             task.save()
         else:
             context = {'form': form}
@@ -244,7 +264,7 @@ def complete_task(request, pk):
 
             data = json.dumps(data)
             return HttpResponse(data, content_type='application/json')
-            
+
             # context = {
             #     'task': task,
             #     'experience': experience,
@@ -297,7 +317,6 @@ def create_group(request):
             return render(request, 'create_group.html', context)
         return redirect('viewGroups')
 
-
 @login_required
 def group_details(request, pk):
     user = request.user
@@ -315,7 +334,6 @@ def group_details(request, pk):
         'group_pk': group.pk
     }
     return render(request, 'group_details.html', context)
-
 
 @login_required
 def join_group(request, pk):
@@ -351,3 +369,66 @@ def join_group(request, pk):
             return render(request, 'join_group.html', context)
         # request.session['join'] = 'True'
         return redirect(reverse('groupDetails', kwargs={'pk': pk}))
+
+@login_required
+def view_tops(request, choice = None):
+    context = {}
+    if request.method == 'GET':
+        form = ShowCategoryTopForm()
+        context['form'] = form
+        if not choice:
+            return render(request, 'tops.html', context)
+        elif choice == 'general':
+            general_top = UserProfile.objects.order_by('level', 'experience')[:100]
+            context['general_top'] = general_top
+            return render(request, 'tops.html', context)
+    elif request.method ==  'POST' and choice == 'category':
+        form = ShowCategoryTopForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['category']:
+                category = form.cleaned_data['category']
+                users = {}
+                tasks = Task.objects.filter(category=category)
+                for task in tasks:
+                    if task.owner.pk not in users:
+                        users[task.owner.pk] = task.experience_total
+                    else:
+                        users[task.owner.pk] += task.experience_total
+                users = sorted(users.items(), key=lambda x: x[1], reverse=True)
+                users = [User.objects.get(pk=x[0]) for x in users][:100]
+                context['category_top'] = users
+        context['form'] = form
+        return render(request, 'tops.html', context)
+
+@login_required
+def shop_view_buy(request, pk = None):
+    userthemes = map(lambda usertheme: usertheme.theme.pk, UserThemes.objects.filter(user=request.user))
+    themes = Theme.objects.exclude(name='Default').exclude(pk__in=userthemes)
+    context = {
+        'themes': themes
+    }
+
+    if pk:
+        user_profile = request.user.profile
+        theme = Theme.objects.get(pk=pk)
+        if theme in themes:
+            if user_profile.points >= theme.price:
+                user_profile.points -= theme.price
+                user_profile.save()
+                UserThemes.objects.create(user=request.user, theme=theme)
+
+                #recalculating already bought themes
+                userthemes = map(lambda usertheme: usertheme.theme.pk, UserThemes.objects.filter(user=request.user))
+                themes = Theme.objects.exclude(name='Default').exclude(pk__in=userthemes)
+                context['themes'] = themes
+
+                context['message'] = 'Congrats! You just bought yourself a new theme!'
+            else:
+                context['message'] = 'Sorry! You don\'t have enough points to buy \"{}\"!'.format(theme.name)
+        else:
+            context['message'] = 'You already have theme \"{}\"!'.format(theme.name)
+
+    if not context['themes']:
+        context['no_themes_message'] = 'You already bought all available themes!'
+    return render(request, 'shop.html', context)
+

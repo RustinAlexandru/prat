@@ -19,6 +19,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
+from django.views.generic import TemplateView
 
 # Import Views
 from . import views
@@ -34,17 +35,19 @@ urlpatterns = [
     url(r'^task/restart/(?P<pk>\d+)/$', views.restart_task, name='restartTask'),
     url(r'^task/complete/(?P<pk>\d+)/$', views.complete_task, name='completeTask'),
     url(r'^profile/edit/$', views.edit_profile, name='editProfile'),
-    url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.view_profile, name='viewProfile'),
+    url(r'^profile/(?P<username>[A-Za-z0-9.]+)/$', views.view_profile, name='viewProfile'),
     url(r'^profile/$', views.view_profile, name='viewProfile'),
     url(r'^task/create/$', views.create_task, name='createTask'),
-                  url(r'groups/$', views.view_groups, name='viewGroups'),
-                  url(r'groups/create', views.create_group, name='createGroup'),
-                  url(r'groups/(?P<pk>\d+)/$', views.group_details,
-                      name="groupDetails"),
-                  url(r'groups/join/(?P<pk>\d+)/$', views.join_group,
-                      name='joinGroup'),
+    url(r'groups/$', views.view_groups, name='viewGroups'),
+    url(r'groups/create', views.create_group, name='createGroup'),
+    url(r'groups/(?P<pk>\d+)/$', views.group_details, name="groupDetails"),
+    url(r'groups/join/(?P<pk>\d+)/$', views.join_group, name='joinGroup'),
     url(r'^$', views.index, name='index'),
-    url(r'^ongs', views.view_ongs, name='ongList'),
+    url(r'^ongs/$', views.view_ongs, name='ongList'),
     url(r'^ong/details/(?P<pk>\d+)/$', views.ong_details, name='ongDetails'),
+    url(r'^tops/$', views.view_tops, name='viewTops'),
+    url(r'^tops/(?P<choice>[A-Za-z0-9]+)/$', views.view_tops, name='viewTops'),
+    url(r'^shop/$', views.shop_view_buy, name='shopViewBuy'),
+    url(r'^shop/buy/(?P<pk>\d+)/$', views.shop_view_buy, name='shopViewBuy'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
