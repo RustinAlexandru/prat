@@ -88,3 +88,9 @@ class CreateGroupForm(ModelForm):
         fields = ['name', 'description', 'task']
         error_messages = {
         }
+
+
+class ShowCategoryTopForm(Form):
+    category = ChoiceField(
+        choices=([(None, '')] + [(cat.pk, cat.name) for cat in Category.objects.all()]),
+        required=True)

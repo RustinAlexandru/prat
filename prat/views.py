@@ -9,7 +9,7 @@ from prat.models import (UserProfile, Task, Category, UserTaskActivity,
 
 # Prat Forms
 from prat.forms import (EditProfileForm, UserRegisterForm, CreateTaskForm,
-    EditTaskForm, CreateGroupForm)
+    EditTaskForm, CreateGroupForm, ShowCategoryTopForm)
 
 def index(request):
     if request.user.is_authenticated():
@@ -286,3 +286,33 @@ def create_group(request):
             context = {'form': form}
             return render(request, 'create_group.html', context)
         return redirect('viewGroups')
+
+@login_required
+def view_tops(request, choice = None):
+    context = {}
+    if request.method == 'GET':
+        form = ShowCategoryTopForm()
+        context['form'] = form
+        if not choice:
+            return render(request, 'tops.html', context)
+        elif choice == 'general':
+            general_top = UserProfile.objects.order_by('level', 'experience')[:100]
+            context['general_top'] = general_top
+            return render(request, 'tops.html', context)
+    elif request.method ==  'POST' and choice == 'category':
+        form = ShowCategoryTopForm(request.POST)
+        if form.is_valid():
+            if form.cleaned_data['category']:
+                category = form.cleaned_data['category']
+                users = {}
+                tasks = Task.objects.filter(category=category)
+                for task in tasks:
+                    if task.owner.pk not in users:
+                        users[task.owner.pk] = task.experience_total
+                    else:
+                        users[task.owner.pk] += task.experience_total
+                users = sorted(users.items(), key=lambda x: x[1], reverse=True)
+                users = [User.objects.get(pk=x[0]) for x in users][:100]
+                context['category_top'] = users
+        context['form'] = form
+        return render(request, 'tops.html', context)

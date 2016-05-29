@@ -19,6 +19,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.core.urlresolvers import reverse_lazy
+from django.views.generic import TemplateView
 
 # Import Views
 from . import views
@@ -40,7 +41,9 @@ urlpatterns = [
                   url(r'groups/$', views.view_groups, name='viewGroups'),
                   url(r'groups/create', views.create_group, name='createGroup'),
     url(r'^$', views.index, name='index'),
-    url(r'^ongs', views.view_ongs, name='ongList'),
+    url(r'^ongs/$', views.view_ongs, name='ongList'),
     url(r'^ong/details/(?P<pk>\d+)/$', views.ong_details, name='ongDetails'),
+    url(r'^tops/$', views.view_tops, name='viewTops'),
+    url(r'^tops/(?P<choice>[A-Za-z0-9]+)/$', views.view_tops, name='viewTops'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
