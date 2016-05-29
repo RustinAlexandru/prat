@@ -43,5 +43,7 @@ urlpatterns = [
                       name="groupDetails"),
                   # url(r'groups/join/$', views.)
     url(r'^$', views.index, name='index'),
+    url(r'^ongs', views.view_ongs, name='ongList'),
+    url(r'^ong/details/(?P<pk>\d+)/$', views.ong_details, name='ongDetails'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

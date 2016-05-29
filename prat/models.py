@@ -6,6 +6,7 @@ from django.db import models
 
 # More
 
+
 class UserProfile(models.Model):
     """model class for a user profile, 1-to-1 relationship with User model,
        stores additional information about a user (timezone, language,
@@ -30,6 +31,27 @@ class UserProfile(models.Model):
     # Relations
     user = models.OneToOneField(User, on_delete = models.CASCADE,
                     related_name = 'profile', verbose_name = 'user')
+
+    def __unicode__(self):
+        return u'{} - {}'.format(self.user.username, self.first_name, self.last_name)
+
+    def giveExperience(self, exp):
+        self.experience = self.experience + exp
+        self.save()
+        self.checkLevel()
+
+    def checkLevel(self):
+        expNeeded = self.expNeeded()
+        if(self.experience >= expNeeded):
+            self.experience = self.experience - expNeeded
+            self.level = self.level + 1
+            self.save()
+
+    def expNeeded(self):
+        expNeeded = 100
+        for x in range(self.level - 1):
+            expNeeded *= 2
+        return expNeeded
 
 
 class Task(models.Model):
@@ -59,9 +81,11 @@ class Task(models.Model):
                     related_name = 'tasks', on_delete = models.CASCADE)
     owner = models.ForeignKey(User, verbose_name = 'owner',
                     related_name = 'tasks', on_delete = models.CASCADE)
+    ong = models.ForeignKey('Ong', verbose_name = 'ONG', related_name = 'tasks',
+                    null = True, on_delete = models.SET_NULL)
 
     def __unicode__(self):
-        return u'{}'.format(self.name)
+        return u'{} - {}'.format(self.name, self.owner.username)
 
     def completed(self):
         task_activities = UserTaskActivity.objects.filter(task = self, date_created__gte = date.today())
@@ -100,7 +124,6 @@ class Task(models.Model):
                 last_date = activity.date_created.date()
                 streak = streak + 1
         return streak
-
 
 
 class PredefinedTask(models.Model):
@@ -146,6 +169,7 @@ class UserGroupMembership(models.Model):
 
     class Meta:
         unique_together = (('user', 'user_group_task', 'group'))
+
 
 
 class UserGroupComment(models.Model):
@@ -208,6 +232,7 @@ class Category(models.Model):
     def __unicode__(self):
         return u'{}'.format(self.name)
 
+
 class UserTaskActivity(models.Model):
     """model class for a user-task activity, M-to-1 relationship with Task model,
        tracks daily progress for a user's task
@@ -226,3 +251,13 @@ class UserTaskActivity(models.Model):
 
     def __unicode__(self):
         return u'{} - {} - {}'.format(self.user.username, self.task.name, self.date_created.date())
+
+
+class Ong(models.Model):
+    """ Ongs to which donations, from points achieved by users, will go"""
+
+    name = models.CharField(max_length=100)
+    description = models.CharField(max_length=500)
+
+    def __unicode__(self):
+        return u'{}'.format(self.name)

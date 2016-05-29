@@ -1,70 +1,145 @@
 {% extends 'layout.html' %}
 
 {% block heading %}
-    <h2>Welcome to <em>Prat</em></h2>
 {% endblock %}
 
 {% block content %}
-    <a href="{% url 'createTask' %}" class="btn btn-info" role="button"> Create task </a>
 
-    <h4>Today's Tasks</h4>
-    {% for task in tasks %}
-        {% if task not in completed_tasks and task not in overdue_tasks %}
-            <div class="task-card">
-                <div class="header">
-                    <h4>{{ task.name }}</h4>
-                </div>
-                <div class="footer">
-                    <a href="{% url 'viewTask' task.pk %}">
-                        <button type="button" class="btn btn-success task-button">
-                            Details
-                        </button>
-                    </a>
-
-                    <a href="{% url 'completeTask' task.pk %}">
-                        <button type="button" class="btn btn-success task-button">
-                            Complete <i class="coins small"></i>
-                        </button>
-                    </a>
-                </div>
+    {% if overdue_tasks_no > 0 %}
+    <div class="home-showcase-panel">
+        <div class="panel-header">
+            <div class="left">
+                <h4>Overdue Tasks</h4>
+                <span class="details">
+                    <em>Boooo, you have on overdue:</em> <b>{{ overdue_tasks_no }}</b>
+                </span>
             </div>
-        {% endif %}
-    {% endfor %}
-
-    <h4>Completed Tasks</h4>
-    {% for task in completed_tasks %}
-        <div class="task-card completed">
-            <div class="header">
-                <h4>{{ task.name }}</h4>
-            </div>
-            <div class="footer">
-                <a href="{% url 'viewTask' task.pk %}">
-                    <button type="button" class="btn btn-success task-button">
-                        Details
-                    </button>
-                </a>
+            <div class="right">
+                <span class="details">
+                    <a href="#" class="btn">Restart All</a>
+                </span>
             </div>
         </div>
-    {% endfor %}
+        <div class="content">
+            {% for task in overdue_tasks %}
+                <div class="task-card overdue">
+                    <div class="header">
+                        <h4>{{ task.name }}</h4>
+                    </div>
+                    <div class="footer">
+                        <a href="{% url 'viewTask' task.pk %}">
+                            <button type="button" class="btn btn-success task-button">
+                                Details
+                            </button>
+                        </a>
+                        <a href="{% url 'restartTask' task.pk %}">
+                        <button type="button" class="btn btn-success task-button">
+                            Restart
+                        </button>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
-    <h4>Overdue</h4>
-    {% for task in overdue_tasks %}
-        <div class="task-card overdue">
-            <div class="header">
-                <h4>{{ task.name }}</h4>
+    {% if today_tasks_no > 0 %}
+    <div class="home-showcase-panel">
+        <div class="panel-header">
+            <div class="left">
+                <h4>Today's Tasks</h4>
+                <span class="details">
+                    <em>Tasks to complete:</em> <b>{{ today_tasks_no }}</b>
+                </span>
             </div>
-            <div class="footer">
-                <a href="{% url 'viewTask' task.pk %}">
-                    <button type="button" class="btn btn-success task-button">
-                        Details
-                    </button>
-                </a>
-                <a href="{% url 'restartTask' task.pk %}">
-                <button type="button" class="btn btn-success task-button">
-                    Restart
-                </button>
-                </a>
+            <div class="right">
+                <span class="details">
+                    <a href="#" class="btn">Complete All</a>
+                </span>
             </div>
         </div>
-    {% endfor %}
+        <div class="content">
+            {% for task in tasks %}
+                {% if task not in completed_tasks and task not in overdue_tasks %}
+                    <div class="task-card">
+                        <div class="header">
+                            <h4>{{ task.name }}</h4>
+                        </div>
+                        <div class="footer">
+                            <a href="{% url 'viewTask' task.pk %}">
+                                <button type="button" class="btn btn-success task-button">
+                                    Details
+                                </button>
+                            </a>
+
+                            <button type="button" class="btn btn-success task-button complete-button" data-id="{{ task.pk }}">
+                                Complete <i class="coins small"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if completed_tasks_no > 0 %}
+    <div class="home-showcase-panel">
+        <div class="panel-header">
+            <div class="left">
+                <h4>Completed Tasks</h4>
+                <span class="details">
+                    <em>Hooray, you completed:</em> <b>{{ completed_tasks_no }}</b>
+                </span>
+            </div>
+        </div>
+        <div class="content">
+            {% for task in completed_tasks %}
+                <div class="task-card completed">
+                    <div class="header">
+                        <h4>{{ task.name }}</h4>
+                    </div>
+                    <div class="footer">
+                        <a href="{% url 'viewTask' task.pk %}">
+                            <button type="button" class="btn btn-success task-button">
+                                Details
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function addEventListeners(className, fn) {
+            var completeButtons = $("." + className);
+            for (var i = 0; i < completeButtons.length; i++) {
+                var button = completeButtons[i];
+                button.addEventListener('click', function(ev) {
+                    var jTarget = $(ev.target);
+                    if(ev.target.tagName != 'BUTTON') {
+                        var jTarget = $(ev.path[1]);
+                    }
+                    ev.preventDefault();
+                    fn(jTarget.data().id);
+                });
+            }
+        }
+
+        $(document).ready(function() {
+            addEventListeners('complete-button', function(id) {
+                $.get('/task/complete/' + id).done(function(data, status, xhr) {
+                    if(xhr.status === 200) {
+                        postCompleteTask(data);
+                    }
+                });
+            });
+        });
+    </script>
 {% endblock %}

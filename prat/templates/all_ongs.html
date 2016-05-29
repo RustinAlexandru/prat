@@ -1,0 +1,7 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% for ong in ong_list %}
+        <h4><a href="{% url 'ongDetails' ong.pk %}"> {{ ong }}</a></h4>
+    {% endfor %}
+{% endblock %}

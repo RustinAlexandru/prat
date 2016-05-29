@@ -1,16 +1,31 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <h4> {{ task.name }} </h4>
+    <div class="task-details-panel">
+        <div class="header">
+            <div class="left">
+                <h4>{{ task.name }}<small>{{ task.category }}</small></h4>
+                <span class="details">
+                    <em>Current streak</em>: <b>{{ activity_len_count }}</b>
+                </span>
+            </div>
+            <div class="right">
+                <span class="details">
+                    <a href="{% url 'editTask' task.pk %}" class="btn">Edit</a>
+                    <a href="{% url 'deleteTask' task.pk %}" class="btn">Delete</a>    
+                </span>
+            </div>
+        </div>
+        <div class="content">
+            {% if task.ong %}
+                <h2>ThaskYou</h2>
+                <p>Keep this task's ChainStreak as high as you can so you can help: <a href="{% url 'ongDetails' task.ong.pk %}"> {{ task.ong }}</a></p>
+            {% endif %}
 
-    {% if user == task.owner %}
-        <a href="{% url 'editTask' task.pk %}" class="btn">Edit Task</a>
-        <a href="{% url 'deleteTask' task.pk %}" class="btn">Delete Task</a>
-    {% endif %}
-
-    <p> {{ task.category }} </p>
-    {% for counter in activity_length %}
-        <div style="height: 50px; width: 50px; background-color: red"></div>
-        </br>
-    {% endfor %}
+            <h2>ChainStreak</h2>
+            {% for counter in activity_length %}
+                <div style="height: 20px; width: 50px; background-color: red; margin-bottom: 5px;"></div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

@@ -1,9 +1,8 @@
 from django.contrib.auth.models import User
+from prat.models import Task, Category, Ong, UserGroup
 from django.forms import Form, ModelForm, CharField, PasswordInput, \
     ImageField, EmailField, ValidationError, DateField, \
     SelectDateWidget, ChoiceField
-
-from prat.models import Task, Category, UserGroup
 
 
 class UserRegisterForm(Form):
@@ -54,11 +53,14 @@ class EditProfileForm(Form):
 class CreateTaskForm(ModelForm):
     class Meta:
         model = Task
-        fields = ['name', 'category']
+        fields = ['name', 'category', 'ong']
         error_messages = {
             'category': {
                 'required': ("You need to pick a category! "),
             },
+            'ong': {
+                'required': ("You need to pick an ONG to donate to! "),
+            }
         }
 
     def clean_category(self):
@@ -73,6 +75,10 @@ class EditTaskForm(Form):
     category = ChoiceField(
         choices=((cat.pk, cat.name) for cat in Category.objects.all()),
         required = False
+        )
+    ong = ChoiceField(
+        choices=((ong.pk, ong.name) for ong in Ong.objects.all()),
+        required = True
         )
 
 

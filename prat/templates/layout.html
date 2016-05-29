@@ -43,9 +43,12 @@
           </div>
 
           {% if user.is_authenticated %}
-			  <ul class="nav navbar-nav navbar-left">
-				  <li><a href="{% url "viewGroups" %}">Groups</a></li>
-			  </ul>
+    			  <ul class="nav navbar-nav navbar-left">
+              <li><a href="{% url 'createTask' %}">Create Task</a></li>
+              <li><a href="{% url 'ongList' %}">ONGs</a></li>
+    				  <li><a href="{% url "viewGroups" %}">Groups</a></li>
+    			  </ul>
+
             <ul class="nav navbar-nav navbar-right">
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
@@ -56,12 +59,8 @@
                   <li><a href="{% url "logout" %}">Logout</a></li>
                 </ul>
               </li>
-              <li>
-                <a href="#">Level {{ user.profile.level }}</a>
-              </li>
-              <li>
-                <a href="#">{{ user.profile.points }} <i class="coins small"></i></a>
-              </li>
+              <li><a href="#">Level {{ user.profile.level }}</a></li>
+              <li><a href="#">{{ user.profile.points }} <i class="coins small"></i></a></li>
             </ul>
           {% else %}
             <ul class="nav navbar-nav navbar-right">
@@ -81,9 +80,25 @@
         </div>
       </div>
 
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-      <script>window.jQuery || document.write('<script src="{% static "js/vendor/jquery-1.11.2.min.js" %}"><\/script>')</script>
+      <div class="overlay">
+        <div class="single modal-task-completed">
+          <div class="modal-header">
+            <h4 class="task-name">Task Name</h4>
+          </div>
+          <div class="content">
+            <div class="details">
+            </div>
+            <div class="action">
+              <button type="button" class="btn btn-success" onclick="hideModal('modal-task-completed')">OK</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="{% static "js/vendor/jquery-1.11.2.min.js" %}"></script>
       <script src="{% static "js/vendor/bootstrap.min.js" %}"></script>
       <script src="{% static "js/main.js" %}"></script>
+
+      {% block scripts %}{% endblock %}
     </body>
 </html>
