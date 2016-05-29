@@ -2,7 +2,7 @@ db.sqlite3
 *.pyc
 **/**/*.pyc
 prat/migrations/*.py
-images/*
+images/avatars/*
 static/CACHE/
 !images/avatars/no_avatar.jpg
 !prat/migrations/__init__.py
