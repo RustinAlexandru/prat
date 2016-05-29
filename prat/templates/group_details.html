@@ -1,31 +1,39 @@
 {% extends 'layout.html' %}
 
 {% block heading %}
-	<h2> {{ group.title }}</h2>
+    <h2> {{ group.title }}</h2>
 {% endblock %}
 
 {% block content %}
 
-	{% if user not in group_users %}
-		<a href="{% url  'joinGroup' group_pk %}"><h2>Join group</h2></a>
-	{% else %}
-	{% endif %}
+    {% if user not in group_users %}
+        <a href="{% url  'joinGroup' group_pk %}"><h2>Join group</h2></a>
+    {% else %}
+    {% endif %}
 
-	<textarea id="comment"> </textarea>
-	{#	<a href="{% url 'addComment' %}">#}
-	<button type="button" class="btn btn-primary task-button">
-		Add comment
-	</button>
-	{#	</a>#}
+    {% if user in group_users %}
+        <h4>Add a comment</h4>
+        <p class="error">{{ message }}</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Post comment</button>
+        </form>
+    {% endif %}
 
-	{% for user in group_users %}
-		<p> {{ user }}</p>
-	{% endfor %}
+    <h4>Group Members</h4>
+    {% for user in group_users %}
+        <p><a href="{% url 'viewProfile' user.username %}">{{ user.username }}</a></p>
+    {% endfor %}
 
-	Tasks:
+    <h4>Tasks</h4>
+    {% for task in group_tasks %}
+        <p> {{ task }} </p>
+    {% endfor %}
 
-	{% for task in group_tasks %}
-		<p> {{ task }} </p>
-	{% endfor %}
+    <h4>Comments</h4>
+    {% for comment in comments %}
+        <p><a href="{% url 'viewProfile' comment.user.username %}">{{ comment.user.username }}</a><small>@{{ comment.date_added }}</small>: {{ comment.text }}</p>
+    {% endfor %}
 
 {% endblock %}

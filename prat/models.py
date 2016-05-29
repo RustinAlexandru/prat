@@ -151,8 +151,7 @@ class UserGroup(models.Model):
     description = models.CharField(max_length=500, default="")
 
     # Relations
-    members = models.ManyToManyField(User,
-                                     through='UserGroupMembership')  # might do a through model
+    members = models.ManyToManyField(User, through='UserGroupMembership')
 
     def __unicode__(self):
         return self.name

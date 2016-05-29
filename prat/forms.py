@@ -108,9 +108,9 @@ class CreateGroupForm(ModelForm):
         }
 
 
-class JoinGroup(ModelForm):
+class JoinGroupForm(ModelForm):
     def __init__(self, user, *args, **kwargs):
-        super(JoinGroup, self).__init__(*args, **kwargs)
+        super(JoinGroupForm, self).__init__(*args, **kwargs)
         self.fields['user_group_task'].queryset = Task.objects.filter(
             owner=user)
 
@@ -125,6 +125,10 @@ class JoinGroup(ModelForm):
                 'unique': ("You can't join with the same task! "),
             }
         }
+
+
+class AddGroupCommentForm(Form):
+    comment = CharField(max_length=500, required=True)
 
 
 class ShowCategoryTopForm(Form):

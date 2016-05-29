@@ -12,11 +12,12 @@ from django.shortcuts import redirect, render
 # Prat Models
 from django.contrib.auth.models import User
 from prat.models import (UserProfile, Task, Category, UserTaskActivity,
-    UserGroup, UserGroupMembership, Ong, Theme, UserThemes)
+    UserGroup, UserGroupMembership, Ong, Theme, UserThemes, UserGroupComment)
 
 # Prat Forms
 from prat.forms import (EditProfileForm, UserRegisterForm, CreateTaskForm,
-    EditTaskForm, CreateGroupForm, JoinGroup, ShowCategoryTopForm)
+    EditTaskForm, CreateGroupForm, JoinGroupForm, ShowCategoryTopForm,
+    AddGroupCommentForm)
 
 
 def index(request):
@@ -310,8 +311,7 @@ def create_group(request):
             if form.cleaned_data['description']:
                 description = form.cleaned_data['description']
 
-            UserGroup.objects.create(name=name, description=description
-                                     )
+            UserGroup.objects.create(name=name, description=description)
         else:
             context = {'form': form}
             return render(request, 'create_group.html', context)
@@ -327,13 +327,35 @@ def group_details(request, pk):
         group_membership = UserGroupMembership.objects.filter(user=user).filter(
             group=group).first()
         group_tasks.append(group_membership.user_group_task)
-
+    comments = UserGroupComment.objects.filter(group=group)
     context = {
         'group_users': group_users,
         'group_tasks': group_tasks,
-        'group_pk': group.pk
+        'group_pk': group.pk,
+        'comments': comments
     }
-    return render(request, 'group_details.html', context)
+
+    if request.method == 'GET':
+        if user in group_users:
+            form = AddGroupCommentForm()
+            context['form'] = form
+        return render(request, 'group_details.html', context)
+    elif request.method == 'POST' and user in group_users:
+        form = AddGroupCommentForm(request.POST)
+        user = request.user
+        if form.is_valid():
+            if form.cleaned_data['comment']:
+                comment = form.cleaned_data['comment']
+            UserGroupComment.objects.create(user=user, group=group, text=comment)
+
+            #re-fetch comments after creating a new one
+            comments = UserGroupComment.objects.filter(group=group)
+            context['comments'] = comments
+
+            context['form'] = AddGroupCommentForm()
+        else:
+            context['form'] = form
+        return render(request, 'group_details.html', context)
 
 @login_required
 def join_group(request, pk):
@@ -345,7 +367,7 @@ def join_group(request, pk):
         return redirect(reverse('groupDetails', kwargs={'pk': pk}))
 
     if request.method == 'GET':
-        form = JoinGroup(request.user)
+        form = JoinGroupForm(request.user)
         context = {
             'form': form,
         }
@@ -353,7 +375,7 @@ def join_group(request, pk):
     elif request.method == 'POST':
         # if request.session.get('join', False):
         #     return HttpResponse("You've already joined this group!")
-        form = JoinGroup(request.user, request.POST)
+        form = JoinGroupForm(request.user, request.POST)
         user = request.user
         group = UserGroup.objects.get(pk=pk)
         if form.is_valid():

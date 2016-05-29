@@ -9,11 +9,11 @@
 
     <h3>Top by Category</h3>
     <p class="error">{{ message }}</p>
-        <form method="post" action="{% url 'viewTops' 'category' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Show me</button>
-        </form>
+    <form method="post" action="{% url 'viewTops' 'category' %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Show me</button>
+    </form>
 
     </br>
     {% for user in category_top %}
