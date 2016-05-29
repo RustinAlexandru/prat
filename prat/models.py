@@ -129,9 +129,24 @@ class UserGroup(models.Model):
 
 
     # Relations
-    task = models.OneToOneField('Task', related_name = 'group',
-                    verbose_name = 'task', null = False)
-    users = models.ManyToManyField(User) # might do a through model
+    # task = models.OneToOneField('Task', related_name = 'group',
+    #                 verbose_name = 'task', null = False)
+    members = models.ManyToManyField(User,
+                                     through='UserGroupMembership')  # might do a through model
+
+    def __unicode__(self):
+        return self.name
+
+
+class UserGroupMembership(models.Model):
+    user = models.ForeignKey(User)
+    user_group_task = models.OneToOneField(Task, null=True)
+    group = models.ForeignKey(UserGroup)
+    date_joined = models.DateField()
+
+    class Meta:
+        unique_together = (('user', 'user_group_task', 'group'))
+
 
 class UserGroupComment(models.Model):
     """model class for a comment on a group chat, M-to-1 relationship with

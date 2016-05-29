@@ -4,7 +4,9 @@ from django.shortcuts import redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
-from prat.models import UserProfile, Task, Category, UserTaskActivity, UserGroup
+from prat.models import UserProfile, Task, Category, UserTaskActivity, \
+    UserGroup, \
+    UserGroupMembership
 
 # Prat Forms
 from prat.forms import EditProfileForm, UserRegisterForm, CreateTaskForm, \
@@ -266,3 +268,20 @@ def create_group(request):
             context = {'form': form}
             return render(request, 'create_group.html', context)
         return redirect('viewGroups')
+
+
+@login_required
+def group_details(request, pk):
+    user = request.user
+    group = UserGroup.objects.get(pk=pk)
+    group_users = group.members.all()
+    group_tasks = []
+    for user in group_users:
+        group_membership = UserGroupMembership.objects.get(user=user)
+        group_tasks.append(group_membership.user_group_task)
+
+    context = {
+        'group_users': group_users,
+        'group_tasks': group_tasks,
+    }
+    return render(request, 'group_details.html', context)

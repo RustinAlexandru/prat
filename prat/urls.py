@@ -39,6 +39,9 @@ urlpatterns = [
     url(r'^task/create/$', views.create_task, name='createTask'),
                   url(r'groups/$', views.view_groups, name='viewGroups'),
                   url(r'groups/create', views.create_group, name='createGroup'),
+                  url(r'groups/(?P<pk>\d+)/$', views.group_details,
+                      name="groupDetails"),
+                  # url(r'groups/join/$', views.)
     url(r'^$', views.index, name='index'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
