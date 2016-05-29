@@ -216,7 +216,7 @@ a:hover {
 .coins {
     vertical-align: middle;
     display: inline-block;
-    background: url('/media/images/coin.png');
+    background: url('/images/coin.png');
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
@@ -224,5 +224,108 @@ a:hover {
     &.small {
         width: 15px;
         height: 15px;
+    }
+}
+
+.overlay {
+    position: fixed;
+    background: rgba(0, 0, 0, .2);
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    display: none;
+
+    &.active {
+        display: block;
+    }
+
+    .single {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: none;
+
+        &.active {
+            display: block;
+        }
+    }
+
+    .modal-task-completed {
+        min-width: 200px;
+        border-radius: 4px;
+        overflow: hidden;
+
+        .modal-header {
+            background: #22262d;
+
+            h4 {
+                padding: 0;
+                margin: 0;
+                color: white;
+            }
+        }
+
+        background: #fff;
+        box-sizing: border-box;
+        text-align: center;
+
+        .header {
+            padding: 10px 20px;
+        }
+
+        .content {
+            padding: 10px 20px;
+        }
+    }
+}
+
+.chain {
+
+    .chain-row {
+        margin-bottom: 5px;
+
+        .date-span {
+            display: inline-block;
+            vertical-align: middle;
+            width: 50px;
+
+            .day, .month {
+                display: block;
+                text-align: center;
+            }
+
+            .day {
+                color: #333;
+                font-size: 18px;
+            }
+
+            .month {
+                color: #AAA;
+                font-size: 12px;
+            }
+        }
+    }
+
+    .cell-chain {
+        display: inline-block;
+        vertical-align: middle;
+        width: 40px;
+        height: 40px;
+        margin: 0;
+
+        &.full {
+            background: rgba(0, 0, 0, .1);
+            // : AFTER -> img
+        }
+
+        &.empty {
+            width: 30px;
+            height: 30px;
+            margin: 10px 5px;
+            border-radius: 100%;
+            background: rgba(0, 0, 0, .5);
+        }
     }
 }

@@ -1,11 +1,17 @@
+import json
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from datetime import date
+import datetime
+import json
 from django.shortcuts import redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
-from prat.models import (UserProfile, Task, Category, UserTaskActivity,
-    Ong, UserGroup)
+from prat.models import UserProfile, Task, Category, UserTaskActivity, \
+    UserGroup, UserGroupMembership, Ong
 
 # Prat Forms
 from prat.forms import (EditProfileForm, UserRegisterForm, CreateTaskForm,
@@ -114,10 +120,24 @@ def view_task(request, pk):
     if request.method == 'GET':
         task = Task.objects.get(pk = pk)
         if task.owner == request.user:
+
+            today  = date.today()
+            chain = []
+            for i in range(0, 31):
+                day = today - datetime.timedelta(days=i)
+                activity = UserTaskActivity.objects.filter(task = task, date_created__contains = day).first()
+                if activity is None:
+                    activity = {
+                        'date': day
+                    }
+
+                chain.append(activity)
+
             context = {
                 'task': task,
                 'activity_len_count': task.activity_length(),
-                'activity_length': range(task.activity_length())
+                'activity_length': range(task.activity_length()),
+                'chain': chain
             }
             return render(request, 'task_details.html', context)
         else:
@@ -212,6 +232,12 @@ def complete_task(request, pk):
             points = task.points_reward * (1 + task.activity_length() * task.points_multiplier)
             experience = task.experience_reward * (1 + task.activity_length() * task.experience_multiplier)
 
+            data = {
+                'task': task.name,
+                'experience': experience,
+                'points': points
+            }
+
             profile.points = profile.points + points
             profile.giveExperience(experience)
             profile.save()
@@ -230,12 +256,15 @@ def complete_task(request, pk):
             activity.points_gained = points
             activity.save()
 
-            context = {
-                'task': task,
-                'experience': experience,
-                'points': points
-            }
-            return render(request, 'task_reward.html', context)
+            data = json.dumps(data)
+            return HttpResponse(data, content_type='application/json')
+
+            # context = {
+            #     'task': task,
+            #     'experience': experience,
+            #     'points': points
+            # }
+            # return render(request, 'task_reward.html', context)
         else:
             return redirect('index')
 
@@ -274,18 +303,30 @@ def create_group(request):
                 name = form.cleaned_data['name']
             if form.cleaned_data['description']:
                 description = form.cleaned_data['description']
-            if form.cleaned_data['task']:
-                task = form.cleaned_data['task']
 
-            group = UserGroup.objects.create(name=name, description=description,
-                                             task=task)
-            group.users.clear()
-            group.users.add(user)
+            group = UserGroup.objects.create(name=name, description=description
+                                             )
             group.save()
         else:
             context = {'form': form}
             return render(request, 'create_group.html', context)
         return redirect('viewGroups')
+
+@login_required
+def group_details(request, pk):
+    user = request.user
+    group = UserGroup.objects.get(pk=pk)
+    group_users = group.members.all()
+    group_tasks = []
+    for user in group_users:
+        group_membership = UserGroupMembership.objects.get(user=user)
+        group_tasks.append(group_membership.user_group_task)
+
+    context = {
+        'group_users': group_users,
+        'group_tasks': group_tasks,
+    }
+    return render(request, 'group_details.html', context)
 
 @login_required
 def view_tops(request, choice = None):

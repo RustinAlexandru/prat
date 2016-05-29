@@ -13,11 +13,8 @@
 	</a>
 
 	{% for group in group_users %}
-		<h2> {{ group.name }} </h2>
-		<h4> Group users </h4>
-		{% for user in group.users.all %}
-			<p> {{ user }} </p>
-		{% endfor %}
+		<a href="{% url 'groupDetails' group.pk %}"><h2> {{ group.name }} </h2>
+		</a>
 	{% endfor %}
 
 {% endblock %}
