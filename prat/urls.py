@@ -38,15 +38,15 @@ urlpatterns = [
     url(r'^profile/(?P<username>[A-Za-z0-9]+)/$', views.view_profile, name='viewProfile'),
     url(r'^profile/$', views.view_profile, name='viewProfile'),
     url(r'^task/create/$', views.create_task, name='createTask'),
-                  url(r'groups/$', views.view_groups, name='viewGroups'),
-                  url(r'groups/create', views.create_group, name='createGroup'),
-                  url(r'groups/(?P<pk>\d+)/$', views.group_details,
-                      name="groupDetails"),
-                  # url(r'groups/join/$', views.)
+    url(r'groups/$', views.view_groups, name='viewGroups'),
+    url(r'groups/create', views.create_group, name='createGroup'),
+    url(r'groups/(?P<pk>\d+)/$', views.group_details, name="groupDetails"),
     url(r'^$', views.index, name='index'),
     url(r'^ongs/$', views.view_ongs, name='ongList'),
     url(r'^ong/details/(?P<pk>\d+)/$', views.ong_details, name='ongDetails'),
     url(r'^tops/$', views.view_tops, name='viewTops'),
     url(r'^tops/(?P<choice>[A-Za-z0-9]+)/$', views.view_tops, name='viewTops'),
+    url(r'^shop/$', views.view_shop, name='viewShop'),
+    url(r'^shop/buy/(?P<pk>\d+)/$', views.buy_theme, name='buyTheme'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
