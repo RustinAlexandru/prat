@@ -32,9 +32,11 @@
                                 Details
                             </button>
                         </a>
-                        <button type="button" class="btn btn-success task-button restart-button">
+                        <a href="{% url 'restartTask' task.pk %}">
+                        <button type="button" class="btn btn-success task-button">
                             Restart
                         </button>
+                        </a>
                     </div>
                 </div>
             {% endfor %}
@@ -137,10 +139,6 @@
                         postCompleteTask(data);
                     }
                 });
-            });
-
-            addEventListeners('restart-button', function(id) {
-                $.get('/task/restart/' + id);
             });
         });
     </script>
