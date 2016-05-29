@@ -201,7 +201,12 @@ class Theme(models.Model):
 
     # Properties
     name = models.CharField(max_length = 100)
-    className = models.CharField(max_length = 100, default = 'default', null = False)
+    price = models.IntegerField(default = 0, null = False)
+    description = models.CharField(max_length = 500, blank = True, null = True)
+    class_name = models.CharField(max_length = 100, default = 'default', null = False)
+    image = models.ImageField(upload_to = 'images/themes/',
+        default = 'images/theme/no_theme.jpg', blank = True, null = True)
+    
     def __unicode__(self):
         return u'{} @ {}'.format(self.name, self.className)
 
@@ -213,7 +218,7 @@ class UserThemes(models.Model):
     """
 
     # Relations
-    theme = models.ForeignKey('Theme', on_delete = models.CASCADE)
+    theme = models.ForeignKey(Theme, on_delete = models.CASCADE)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
 
 

@@ -10,8 +10,8 @@ from django.shortcuts import redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
-from prat.models import UserProfile, Task, Category, UserTaskActivity, \
-    UserGroup, UserGroupMembership, Ong, Theme
+from prat.models import (UserProfile, Task, Category, UserTaskActivity,
+    UserGroup, UserGroupMembership, Ong, Theme, UserThemes)
 
 # Prat Forms
 from prat.forms import (EditProfileForm, UserRegisterForm, CreateTaskForm,
@@ -361,3 +361,34 @@ def view_tops(request, choice = None):
                 context['category_top'] = users
         context['form'] = form
         return render(request, 'tops.html', context)
+
+@login_required
+def view_shop(request):
+    themes = Theme.objects.all()
+    context = {
+        'themes': themes
+    }
+    return render(request, 'shop.html', context)
+
+@login_required
+def buy_theme(request, pk):
+    user_profile = request.user.profile
+    theme = Theme.objects.get(pk=pk)
+    themes = Theme.objects.all()
+
+    if user_profile.points >= theme.price:
+        user_profile.points -= theme.price
+        user_profile.save()
+        UserThemes.objects.create(user=request.user, theme=theme)
+
+        context = {
+            'themes': themes,
+            'message': 'Congrats! You just bought yourself a new theme!'
+        }
+        return render(request, 'shop.html', context)
+    else:
+        context = {
+            'themes': themes,
+            'message': 'Sorry! You don\'t have enough points to buy that!'
+        }
+        return render(request, 'shop.html', context)
