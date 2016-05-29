@@ -1,9 +1,13 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+  {% if no_themes_message %}
+    <h4>{{ no_themes_message }}</h4>
+  {% endif %}
+
   {% for theme in themes %}
       <h4 style="display: inline-block"> {{ theme.name }} : {{ theme.price }}</h4>
-      <a href="{% url 'buyTheme' theme.pk %}">Buy</a>
+      <a href="{% url 'shopViewBuy' theme.pk %}">Buy</a>
       {% if theme.description %}
         <p> {{ theme.description }} </p>
       {% endif %}

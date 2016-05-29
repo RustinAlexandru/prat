@@ -50,7 +50,7 @@
               <li><a href="{% url 'createTask' %}">Create Task</a></li>
     				  <li><a href="{% url 'viewGroups' %}">Groups</a></li>
               <li><a href="{% url 'viewTops' %}">Tops</a></li>
-              <li><a href="{% url 'viewShop' %}">Shop</a></li>
+              <li><a href="{% url 'shopViewBuy' %}">Shop</a></li>
     			  </ul>
 
             <ul class="nav navbar-nav navbar-right">
@@ -64,7 +64,7 @@
                 </ul>
               </li>
               <li><a href="#">Level {{ user.profile.level }}</a></li>
-              <li><a href="{% url 'viewShop' %}">{{ user.profile.points }} <i class="coins small"></i></a></li>
+              <li><a href="{% url 'shopViewBuy' %}">{{ user.profile.points }} <i class="coins small"></i></a></li>
             </ul>
           {% else %}
             <ul class="nav navbar-nav navbar-right">

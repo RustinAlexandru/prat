@@ -363,36 +363,33 @@ def view_tops(request, choice = None):
         return render(request, 'tops.html', context)
 
 @login_required
-def view_shop(request):
+def shop_view_buy(request, pk = None):
     userthemes = map(lambda usertheme: usertheme.theme.pk, UserThemes.objects.filter(user=request.user))
     themes = Theme.objects.exclude(name='Default').exclude(pk__in=userthemes)
-        
     context = {
         'themes': themes
     }
+
+    if pk:
+        user_profile = request.user.profile
+        theme = Theme.objects.get(pk=pk)
+        if theme in themes:
+            if user_profile.points >= theme.price:
+                user_profile.points -= theme.price
+                user_profile.save()
+                UserThemes.objects.create(user=request.user, theme=theme)
+
+                #recalculating already bought themes
+                userthemes = map(lambda usertheme: usertheme.theme.pk, UserThemes.objects.filter(user=request.user))
+                themes = Theme.objects.exclude(name='Default').exclude(pk__in=userthemes)
+                context['themes'] = themes
+
+                context['message'] = 'Congrats! You just bought yourself a new theme!'
+            else:
+                context['message'] = 'Sorry! You don\'t have enough points to buy \"{}\"!'.format(theme.name)
+        else:
+            context['message'] = 'You already have theme \"{}\"!'.format(theme.name)
+
+    if not context['themes']:
+        context['no_themes_message'] = 'You already bought all available themes!'
     return render(request, 'shop.html', context)
-
-@login_required
-def buy_theme(request, pk):
-    user_profile = request.user.profile
-    theme = Theme.objects.get(pk=pk)
-
-    userthemes = map(lambda usertheme: usertheme.theme.pk, UserThemes.objects.filter(user=request.user))
-    themes = Theme.objects.exclude(name='Default').exclude(pk__in=userthemes)
-
-    if user_profile.points >= theme.price:
-        user_profile.points -= theme.price
-        user_profile.save()
-        UserThemes.objects.create(user=request.user, theme=theme)
-
-        context = {
-            'themes': themes,
-            'message': 'Congrats! You just bought yourself a new theme!'
-        }
-        return render(request, 'shop.html', context)
-    else:
-        context = {
-            'themes': themes,
-            'message': 'Sorry! You don\'t have enough points to buy that!'
-        }
-        return render(request, 'shop.html', context)

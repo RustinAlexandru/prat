@@ -206,7 +206,7 @@ class Theme(models.Model):
     class_name = models.CharField(max_length = 100, default = 'default', null = False)
     image = models.ImageField(upload_to = 'images/themes/',
         default = 'images/theme/no_theme.jpg', blank = True, null = True)
-    
+
     def __unicode__(self):
         return u'{} @ {}'.format(self.name, self.class_name)
 

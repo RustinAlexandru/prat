@@ -46,7 +46,7 @@ urlpatterns = [
     url(r'^ong/details/(?P<pk>\d+)/$', views.ong_details, name='ongDetails'),
     url(r'^tops/$', views.view_tops, name='viewTops'),
     url(r'^tops/(?P<choice>[A-Za-z0-9]+)/$', views.view_tops, name='viewTops'),
-    url(r'^shop/$', views.view_shop, name='viewShop'),
-    url(r'^shop/buy/(?P<pk>\d+)/$', views.buy_theme, name='buyTheme'),
+    url(r'^shop/$', views.shop_view_buy, name='shopViewBuy'),
+    url(r'^shop/buy/(?P<pk>\d+)/$', views.shop_view_buy, name='shopViewBuy'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
