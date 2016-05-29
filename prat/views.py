@@ -1,9 +1,9 @@
+import json
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
-from django.core import serializers
 from django.http import HttpResponse
-import json
+from django.shortcuts import redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
@@ -286,13 +286,9 @@ def create_group(request):
                 name = form.cleaned_data['name']
             if form.cleaned_data['description']:
                 description = form.cleaned_data['description']
-            if form.cleaned_data['task']:
-                task = form.cleaned_data['task']
 
-            group = UserGroup.objects.create(name=name, description=description,
-                                             task=task)
-            group.users.clear()
-            group.users.add(user)
+            group = UserGroup.objects.create(name=name, description=description
+                                             )
             group.save()
         else:
             context = {'form': form}
