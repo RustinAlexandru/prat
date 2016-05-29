@@ -1,16 +1,17 @@
+import json
+
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
-from django.core import serializers
 from django.http import HttpResponse
 from datetime import date
 import datetime
 import json
+from django.shortcuts import redirect, render
 
 # Prat Models
 from django.contrib.auth.models import User
-from prat.models import (UserProfile, Task, Category, UserTaskActivity,
-    Ong, UserGroup)
+from prat.models import UserProfile, Task, Category, UserTaskActivity, \
+    UserGroup, UserGroupMembership, Ong
 
 # Prat Forms
 from prat.forms import (EditProfileForm, UserRegisterForm, CreateTaskForm,
@@ -302,15 +303,28 @@ def create_group(request):
                 name = form.cleaned_data['name']
             if form.cleaned_data['description']:
                 description = form.cleaned_data['description']
-            if form.cleaned_data['task']:
-                task = form.cleaned_data['task']
 
-            group = UserGroup.objects.create(name=name, description=description,
-                                             task=task)
-            group.users.clear()
-            group.users.add(user)
+            group = UserGroup.objects.create(name=name, description=description
+                                             )
             group.save()
         else:
             context = {'form': form}
             return render(request, 'create_group.html', context)
         return redirect('viewGroups')
+
+
+@login_required
+def group_details(request, pk):
+    user = request.user
+    group = UserGroup.objects.get(pk=pk)
+    group_users = group.members.all()
+    group_tasks = []
+    for user in group_users:
+        group_membership = UserGroupMembership.objects.get(user=user)
+        group_tasks.append(group_membership.user_group_task)
+
+    context = {
+        'group_users': group_users,
+        'group_tasks': group_tasks,
+    }
+    return render(request, 'group_details.html', context)

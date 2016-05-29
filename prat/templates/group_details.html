@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block heading %}
+	<h2> {{ group.title }}</h2>
+{% endblock %}
+
+{% block content %}
+	{#<a href="{% url  joinGroup %}"> <h2>Join group</h2> </a>#}
+
+	<textarea id="comment"> </textarea>
+	{#	<a href="{% url 'addComment' %}">#}
+	<button type="button" class="btn btn-primary task-button">
+		Add comment
+	</button>
+	{#	</a>#}
+
+	{% for user in group_users %}
+		<p> {{ user }}</p>
+	{% endfor %}
+
+	Tasks:
+
+	{% for task in group_tasks %}
+		<p> {{ task }} </p>
+	{% endfor %}
+
+{% endblock %}

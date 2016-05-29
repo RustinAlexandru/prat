@@ -85,6 +85,6 @@ class EditTaskForm(Form):
 class CreateGroupForm(ModelForm):
     class Meta:
         model = UserGroup
-        fields = ['name', 'description', 'task']
+        fields = ['name', 'description']
         error_messages = {
         }
