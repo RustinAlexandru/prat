@@ -264,6 +264,7 @@ class Ong(models.Model):
 
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
+    image = models.ImageField(upload_to = 'images/ongs/', blank = True, null = True)
 
     def __unicode__(self):
         return u'{}'.format(self.name)
