@@ -35,6 +35,7 @@ class EditProfileForm(Form):
             required = False,
             widget = SelectDateWidget(
                 empty_label = ("Choose Year", "Choose Month", "Choose Day"),
+                years = range(1920, 2016)
             )
     )
     gender    = ChoiceField (choices = (('M', 'Male'), ('F', 'Female')), required = False)
