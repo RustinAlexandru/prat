@@ -364,7 +364,9 @@ def view_tops(request, choice = None):
 
 @login_required
 def view_shop(request):
-    themes = Theme.objects.all()
+    userthemes = map(lambda usertheme: usertheme.theme.pk, UserThemes.objects.filter(user=request.user))
+    themes = Theme.objects.exclude(name='Default').exclude(pk__in=userthemes)
+        
     context = {
         'themes': themes
     }
@@ -374,7 +376,9 @@ def view_shop(request):
 def buy_theme(request, pk):
     user_profile = request.user.profile
     theme = Theme.objects.get(pk=pk)
-    themes = Theme.objects.all()
+
+    userthemes = map(lambda usertheme: usertheme.theme.pk, UserThemes.objects.filter(user=request.user))
+    themes = Theme.objects.exclude(name='Default').exclude(pk__in=userthemes)
 
     if user_profile.points >= theme.price:
         user_profile.points -= theme.price

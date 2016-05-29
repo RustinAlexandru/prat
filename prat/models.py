@@ -208,7 +208,7 @@ class Theme(models.Model):
         default = 'images/theme/no_theme.jpg', blank = True, null = True)
     
     def __unicode__(self):
-        return u'{} @ {}'.format(self.name, self.className)
+        return u'{} @ {}'.format(self.name, self.class_name)
 
 
 class UserThemes(models.Model):
@@ -220,6 +220,9 @@ class UserThemes(models.Model):
     # Relations
     theme = models.ForeignKey(Theme, on_delete = models.CASCADE)
     user = models.ForeignKey(User, on_delete = models.CASCADE)
+
+    def __unicode__(self):
+        return u'{} @ {}'.format(self.user.username, self.theme.name)
 
 
 class Achievement(models.Model):

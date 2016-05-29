@@ -85,7 +85,7 @@ class EditTaskForm(Form):
     def __init__(self, request, *args, **kwargs):
         self.request = request
 
-        default_theme = Theme.objects.filter(className='default').first()
+        default_theme = Theme.objects.filter(name='Default').first()
         bought_themes = UserThemes.objects.filter(user=request.user)
         available_themes = []
         available_themes.append((default_theme.pk, default_theme.name))
