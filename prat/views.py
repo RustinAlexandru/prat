@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.core import serializers
 from django.http import HttpResponse
+from datetime import date
+import datetime
 import json
 
 # Prat Models
@@ -117,10 +119,24 @@ def view_task(request, pk):
     if request.method == 'GET':
         task = Task.objects.get(pk = pk)
         if task.owner == request.user:
+
+            today  = date.today()
+            chain = []
+            for i in range(0, 31):
+                day = today - datetime.timedelta(days=i)
+                activity = UserTaskActivity.objects.filter(task = task, date_created__contains = day).first()
+                if activity is None:
+                    activity = {
+                        'date': day
+                    }
+
+                chain.append(activity)
+
             context = {
                 'task': task,
                 'activity_len_count': task.activity_length(),
-                'activity_length': range(task.activity_length())
+                'activity_length': range(task.activity_length()),
+                'chain': chain
             }
             return render(request, 'task_details.html', context)
         else:
