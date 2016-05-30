@@ -153,10 +153,10 @@ def edit_task(request, pk):
         return redirect('index')
 
     if request.method == 'GET':
-        form = EditTaskForm(request)
-        print form
+        form = EditTaskForm(request, initial={'name': task.name, 'category': task.category.pk, 'ong': task.ong.pk, 'theme': task.theme.pk})
         context = {
             'form': form,
+            'task': task
         }
         return render(request, 'edit_task.html', context)
     elif request.method ==  'POST':
@@ -219,8 +219,9 @@ def create_task(request):
                 category = form.cleaned_data['category']
             if form.cleaned_data['ong']:
                 ong = form.cleaned_data['ong']
+            theme = Theme.objects.filter(name='Default').first()
             task = Task.objects.create(name = name, category = category,
-                                       owner = user, ong = ong)
+                                       owner = user, ong = ong, theme = theme)
             task.save()
         else:
             context = {'form': form}
@@ -327,12 +328,13 @@ def group_details(request, pk):
         group_membership = UserGroupMembership.objects.filter(user=user).filter(
             group=group).first()
         group_tasks.append(group_membership.user_group_task)
-    comments = UserGroupComment.objects.filter(group=group)
+    comments = UserGroupComment.objects.filter(group=group).order_by('-date_added')
     context = {
         'group_users': group_users,
         'group_tasks': group_tasks,
         'group_pk': group.pk,
-        'comments': comments
+        'comments': comments,
+        'group': group
     }
 
     if request.method == 'GET':

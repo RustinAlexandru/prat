@@ -1,10 +1,7 @@
 {% extends 'layout.html' %}
 
-{% block heading %}
-{% endblock %}
-
 {% block content %}
-	<h2 class="text-center"> Groups </h2>
+	<h2 class="text-center">Groups</h2>
 
 	<a href="{% url 'createGroup' %}">
 		<button type="button" class="btn btn-success task-button">
@@ -13,8 +10,28 @@
 	</a>
 
 	{% for group in group_users %}
-		<a href="{% url 'groupDetails' group.pk %}"><h2> {{ group.name }} </h2>
-		</a>
+		<div class="home-showcase-panel">
+	        <div class="panel-header">
+	            <div class="left">
+	                <h4>{{ group.name }}</h4>
+	                <span class="details">
+	                    <b>{{ group.members_num }}</b> <em>Members</em>
+	                </span>
+	            </div>
+	            <div class="right">
+	                <span class="details">
+	                	{% if user not in group.members_arr %}
+							<a href="{% url  'joinGroup' group.pk %}" class="button">Join group</a>
+						{% endif %}
+	                    <a href="{% url 'groupDetails' group.pk %}" class="button">Details</a>
+	                </span>
+	            </div>
+	        </div>
+	        <div class="content">
+	        	<span class="meta">Description</span>
+	        	<p>{{ group.description }}</p>
+	        </div>
+	    </div>
 	{% endfor %}
 
 {% endblock %}

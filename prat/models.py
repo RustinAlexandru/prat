@@ -1,5 +1,5 @@
 from datetime import date
-
+import datetime
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -81,7 +81,7 @@ class Task(models.Model):
                     related_name = 'tasks', on_delete = models.CASCADE)
     owner = models.ForeignKey(User, verbose_name = 'owner',
                     related_name = 'tasks', on_delete = models.CASCADE)
-    ong = models.ForeignKey('Ong', verbose_name = 'ONG', related_name = 'tasks',
+    ong = models.ForeignKey('Ong', verbose_name = 'ong', related_name = 'tasks',
                     null = True, on_delete = models.SET_NULL)
     theme = models.ForeignKey('Theme', verbose_name = 'theme', null = True)
 
@@ -126,6 +126,20 @@ class Task(models.Model):
                 streak = streak + 1
         return streak
 
+    def chain(self):
+        today = date.today()
+        chain = []
+        for i in range(0, 31):
+            day = today - datetime.timedelta(days=i)
+            activity = UserTaskActivity.objects.filter(task = self, date_created__contains = day).first()
+            if activity is None:
+                activity = {
+                    'date': day
+                }
+
+            chain.append(activity)
+        return chain
+
 
 class PredefinedTask(models.Model):
     """model class for predefined tasks, M-to-1 relationship with Category model,
@@ -152,6 +166,18 @@ class UserGroup(models.Model):
 
     # Relations
     members = models.ManyToManyField(User, through='UserGroupMembership')
+
+
+    def members_num(self):
+        members = UserGroupMembership.objects.filter(group=self.pk)
+        return len(members)
+
+    def members_arr(self):
+        memberships = UserGroupMembership.objects.filter(group=self.pk)
+        members = []
+        for membership in memberships:
+            members.append(membership.user)
+        return members
 
     def __unicode__(self):
         return self.name
@@ -265,6 +291,10 @@ class Ong(models.Model):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=500)
     image = models.ImageField(upload_to = 'images/ongs/', blank = True, null = True)
+
+    def tasks_num(self):
+        tasks = Task.objects.filter(ong = self.pk)
+        return len(tasks)
 
     def __unicode__(self):
         return u'{}'.format(self.name)

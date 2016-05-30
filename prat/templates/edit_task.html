@@ -1,14 +1,27 @@
 {% extends 'layout.html' %}
 
-{% block heading %}
-  <h2>Edit your task</h2>
-{% endblock %}
-
 {% block content %}
-    <p class="error">{{ message }}</p>
     <form enctype="multipart/form-data"  method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Update</button>
+        <div class="task-details-panel task-edit-panel">
+            <div class="header">
+                <div class="left">
+                    <h4>Edit Task</h4>
+                    <span class="details">
+                        <em>{{ task.name }}</em>
+                    </span>
+                </div>
+                <div class="right">
+                    <span class="details">
+                        <a href="{% url 'viewTask' task.pk %}" class="button">Back</a>
+                        <button class="button" type="submit">Update</button>
+                    </span>
+                </div>
+            </div>
+            <div class="content">
+                <p class="error">{{ message }}</p>
+                {% csrf_token %}
+                {{ form.as_p }}
+            </div>
+        </div>
     </form>
 {% endblock %}

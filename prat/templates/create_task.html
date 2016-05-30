@@ -1,16 +1,24 @@
 {% extends 'layout.html' %}
 
-{% block heading %}
-{% endblock %}
-
 {% block content %}
-<h2 class="centered">Create your task</h2>
-    <div class="task">
-        <p class="error">{{ message }}</p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Create task</button>
-        </form>
-    </div>
+    <form method="post">
+        <div class="task-details-panel task-edit-panel">
+            <div class="header">
+                <div class="left">
+                    <h4>Create Task</h4>
+                </div>
+                <div class="right">
+                    <span class="details">
+                        <a class="button" href="{% url 'index' %}">Back</a>
+                        <button class="button" type="submit">Create task</button>
+                    </span>
+                </div>
+            </div>
+            <div class="content">
+                <p class="error">{{ message }}</p>
+                {% csrf_token %}
+                {{ form.as_p }}
+            </div>
+        </div>
+    </form>
 {% endblock %}

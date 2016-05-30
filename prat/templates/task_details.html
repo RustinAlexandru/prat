@@ -22,7 +22,7 @@
                 <p>Keep this task's ChainStreak as high as you can so you can help: <a href="{% url 'ongDetails' task.ong.pk %}"> {{ task.ong }}</a></p>
             {% endif %}
 
-            <h2>ChainStreak</h2>
+            <h2 style="margin-top: 25px;">ChainStreak</h2>
             <div class="chain {{ task.theme.class_name }}">
                 {% for elem in chain %}
                     {% if elem.task %}

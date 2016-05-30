@@ -1,39 +1,98 @@
 {% extends 'layout.html' %}
 
-{% block heading %}
-    <h2> {{ group.title }}</h2>
+{% block content %}
+	<div class="group-details-page">
+		<div class="sidebar">
+			<div class="header">
+				<h2>{{ group.name }}</h2>
+			</div>
+
+			<div class="content">
+				{% if user not in group_users %}
+					<center>
+						<a href="{% url  'joinGroup' group_pk %}" class="button">Join group</a>
+					</center>
+				{% endif %}
+
+				<h4>Group Members</h4>
+			    {% for user in group_users %}
+			        <p><a href="{% url 'viewProfile' user.username %}">{{ user.username }}</a></p>
+			    {% endfor %}
+
+				{% if user in group_users %}
+			        <h4>Add a comment</h4>
+			        <p class="error">{{ message }}</p>
+			        <form method="post">
+			            {% csrf_token %}
+			            {{ form.as_p }}
+			            <button type="submit">Post comment</button>
+			        </form>
+			    {% endif %}
+
+			    <h4>Comments</h4>
+			    {% for comment in comments %}
+			    	<div class="comment">
+			    		<div class="author">
+			    			<a href="{% url 'viewProfile' comment.user.username %}">{{ comment.user.username }}</a>
+			    		</div>
+			    		<div class="text">
+			    			{{ comment.text }}
+			    		</div>
+			    		<div class="meta">
+			    			<span class="date">
+			    				{{ comment.date_added }}
+			    			</span>
+			    		</div>
+			    	</div>
+			    {% endfor %}
+		    </div>
+		</div>
+
+		<div class="content">
+			<div class="header">
+				<h2>Chains</h2>
+			</div>
+			<div class="content">
+			    {% for task in group_tasks %}
+			    	<div class="taskChain">
+				        <div class="chain-label">
+				        	<span class="author">{{ task.owner.username }}</span>
+				        	<span class="task-name">{{ task.name }}</span>
+				        </div>
+
+				        <div class="chain {{ task.theme.class_name }} nospace">
+			                {% for elem in task.chain %}
+			                    {% if elem.task %}
+			                        <div class="chain-row">
+			                            <div class="cell-chain full"></div>
+			                        </div>
+			                    {% else %}
+			                        <div class="chain-row">
+			                            <div class="cell-chain empty"></div>
+			                        </div>
+			                    {% endif %}
+			                {% endfor %}
+			            </div>
+		            </div>
+			    {% endfor %}
+		    </div>
+		</div>
+	</div>
 {% endblock %}
 
-{% block content %}
+{% block scripts %}
+    <script>
+        function colorClass(idx) {
+            var arr = ['green', 'orange', 'red', 'blue'];
+            return arr[idx];
+        }
 
-    {% if user not in group_users %}
-        <a href="{% url  'joinGroup' group_pk %}"><h2>Join group</h2></a>
-    {% else %}
-    {% endif %}
-
-    {% if user in group_users %}
-        <h4>Add a comment</h4>
-        <p class="error">{{ message }}</p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Post comment</button>
-        </form>
-    {% endif %}
-
-    <h4>Group Members</h4>
-    {% for user in group_users %}
-        <p><a href="{% url 'viewProfile' user.username %}">{{ user.username }}</a></p>
-    {% endfor %}
-
-    <h4>Tasks</h4>
-    {% for task in group_tasks %}
-        <p> {{ task }} </p>
-    {% endfor %}
-
-    <h4>Comments</h4>
-    {% for comment in comments %}
-        <p><a href="{% url 'viewProfile' comment.user.username %}">{{ comment.user.username }}</a><small>@{{ comment.date_added }}</small>: {{ comment.text }}</p>
-    {% endfor %}
-
+        $(document).ready(function() {
+            var chainLabels = $(".chain-label");
+            for (var i = 0; i < chainLabels.length; i++) {
+                var label = $(chainLabels[i]);
+                label.toggleClass(colorClass(parseInt(Math.random() * 4)));
+            }
+        });
+    </script>
 {% endblock %}

@@ -1,7 +1,24 @@
 {% extends 'layout.html' %}
 
 {% block content %}
+    <div class="ong-list">
     {% for ong in ong_list %}
-        <h4><a href="{% url 'ongDetails' ong.pk %}"> {{ ong }}</a></h4>
+        <div class="ong-card">
+            <div class="header" style="background-image:url({{ ong.image.url }})">
+            </div>
+            <div class="content">
+                <h5>Supported by {{ ong.tasks_num }} tasks</h5>
+                <h4>{{ ong }}</h4>
+                <p>{{ ong.description }}</p>
+            </div>
+            <div class="action">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'createTask' %}">Support</a>
+                {% else %}
+                    <a href="#">Please Login to Support</a>
+                {% endif %}
+            </div>
+        </div>
     {% endfor %}
+    </div>
 {% endblock %}
