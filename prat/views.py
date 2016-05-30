@@ -424,10 +424,17 @@ def view_tops(request, choice = None):
         context['form'] = form
         return render(request, 'tops.html', context)
 
+
+def buyableTheme(theme, user):
+    theme.buyable = True if user.profile.points >= theme.price else False
+    return theme
+
 @login_required
 def shop_view_buy(request, pk = None):
     userthemes = map(lambda usertheme: usertheme.theme.pk, UserThemes.objects.filter(user=request.user))
     themes = Theme.objects.exclude(name='Default').exclude(pk__in=userthemes)
+
+    themes = map(lambda theme: buyableTheme(theme, request.user), themes)
     context = {
         'themes': themes
     }

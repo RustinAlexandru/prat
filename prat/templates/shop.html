@@ -5,17 +5,26 @@
     <h4>{{ no_themes_message }}</h4>
   {% endif %}
 
-  {% for theme in themes %}
-      <h4 style="display: inline-block"> {{ theme.name }} : {{ theme.price }}</h4>
-      <a href="{% url 'shopViewBuy' theme.pk %}">Buy</a>
-      {% if theme.description %}
-        <p> {{ theme.description }} </p>
-      {% endif %}
-      {% if theme.image %}
-        <div class="media">
-          <img src={{ theme.image.url | default:"" }} />
-        </div>
-      {% endif %}
-  {% endfor %}
   <p> {{ message }} </p>
+  <div class="ong-list">
+    {% for theme in themes %}
+        <div class="ong-card">
+            <div class="header" style="background-image:url({{ theme.image.url }})">
+            </div>
+            <div class="content">
+                <!-- <h5>Supported by {{ ong.tasks_num }} tasks</h5> -->
+                <h4>{{ theme.name }}</h4>
+                <p>{{ theme.description }}</p>
+            </div>
+            <div class="action">
+                {% if theme.buyable %}
+                    <a href="{% url 'shopViewBuy' theme.pk %}">Buy ({{ theme.price }} <i class="coins small"></i>)</a>
+                {% else %}
+                    <a href="#" class="disabled">Not enough coins ({{ theme.price }} <i class="coins small"></i>)</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+  
 {% endblock %}
