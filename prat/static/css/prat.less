@@ -731,3 +731,102 @@ a:hover {
         }
     }
 }
+
+.profile-card {
+    display: inline-block;
+    width: 250px;
+    background: #fff;
+    border-radius: 4px;
+    margin: 20px 10px;
+    overflow: hidden;
+    box-shadow: 0px 0px 1px 0px rgba(0, 0, 0, .1);
+    font-size: 14px;
+    text-align: center;
+    padding: 20px 0 0;
+    box-sizing: border-box;
+
+    .avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 100%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        margin: auto;
+        display: block;
+    }
+
+    .plate {
+        margin-top: 15px;
+
+        .name {
+            font-size: 16px;
+            color: #000;
+        }
+
+        .level-holder {
+            font-weight: 100;
+
+            .level {
+                font-weight: bold;
+            }
+
+            .exp {
+                font-size: 12px;
+            }
+        }
+
+        .meta {
+            margin: 10px 0;
+            text-align: left;
+            
+            .row {
+                
+                margin: 0;
+                box-sizing: border-box;
+                display: table-row;
+
+                label {
+                    display: table-cell;
+                    padding: 0 0 0 15px;
+                    text-align: right;
+                    font-weight: 100;
+                    color: #666;
+                    font-size: 10px;
+                }
+
+                span {
+                    display: table-cell;
+                    padding: 0 0 0 5px;
+                }
+            }
+        }
+    }
+
+    .action {
+        margin-top: 15px;
+
+        a {
+            display: block;
+            background: #309eff;
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 10px 0;
+
+            &:hover {
+                background: #77bbf7;
+            }
+
+            &.disabled {
+                background: #aaa;
+
+                &:hover {
+                    background: #bbb;
+                }
+            }
+        }
+    }
+}

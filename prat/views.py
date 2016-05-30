@@ -74,7 +74,7 @@ def view_profile(request, username = None):
         user = request.user
 
     context = {
-        'user': user,
+        'user': request.user,
         'profile': user.profile
     }
 

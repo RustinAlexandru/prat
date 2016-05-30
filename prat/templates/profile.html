@@ -1,21 +1,32 @@
 {% extends 'layout.html' %}
 
-{% block heading %}
-  <h2>{{ user.username }}'s Profile</h2>
-{% endblock %}
-
 {% block content %}
-    <h4>Name</h4>
-    <p>{{ profile.first_name }} {{ profile.last_name }}</p>
+    <center>
+        <div class="profile-card">
+            <div class="avatar" style="background-image: url({{ profile.avatar.url }});">
+            </div>
 
-    <h4>Gender</h4>
-    <p>{{ profile.get_gender_display }}</p>
+            <div class="plate">
+                <div class="name">
+                    <span>{{ profile.first_name }}</span>
+                    <span>{{ profile.last_name }}</span>
+                </div>
 
-    <h4>Level</h4>
-    <p>{{ profile.level }}</p>
+                <div class="level-holder">
+                    LEVEL <span class="level">{{ profile.level }}</span>
+                </div>
 
-    <h4>Avatar</h4>
-    <div class="media">
-      <img src={{ profile.avatar.url | default:"" }} />
-    </div>
+                <div class="meta">
+                    <div class="row">
+                        <label>Gender</label>
+                        <span>{{ profile.get_gender_display }}</span>
+                    </div>
+                    <div class="row">
+                        <label>Birthday</label>
+                        <span>{{ profile.birthday|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </center>
 {% endblock %}
