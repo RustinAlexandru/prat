@@ -419,7 +419,8 @@ def view_tops(request, choice = None):
                     else:
                         users[task.owner.pk] += task.experience_total
                 users = sorted(users.items(), key=lambda x: x[1], reverse=True)
-                users = [User.objects.get(pk=x[0]) for x in users][:100]
+                users = [ User.objects.get(pk=x[0]) for x in users ][:100]
+                context['category'] = Category.objects.filter(pk=category).first()
                 context['category_top'] = users
         context['form'] = form
         return render(request, 'tops.html', context)

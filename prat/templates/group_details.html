@@ -16,7 +16,7 @@
 
 				<h4>Group Members</h4>
 			    {% for user in group_users %}
-			        <p><a href="{% url 'viewProfile' user.username %}">{{ user.username }}</a></p>
+			        <span><a href="{% url 'viewProfile' user.username %}">{{ user.username }}</a></span>
 			    {% endfor %}
 
 				{% if user in group_users %}
