@@ -1,10 +1,13 @@
 # PRAT
 
-Prat The Best :D
+## TODO
+
+- Refactor Code & Unify Design
+
 
 ## Installation
 
-- Be sure you have installed Python, Django
+- Be sure you have installed Python, Django and Node
 
 - Requirements:
 
@@ -13,6 +16,8 @@ Prat The Best :D
     `pip install django-timezone-field`
 
     `pip install django_compressor`
+    
+    `npm install less`
 
 - Clone the project
 
@@ -23,7 +28,8 @@ Prat The Best :D
 
 ## Usage
 
-- Get the database ready
+
+- Make your own migartions
 
     ` ./manage.py makemigrations `
 
@@ -35,5 +41,5 @@ Prat The Best :D
 
 ## Contributing
 
-1. Commit in master if you have something that works
-2. To work on a new feature, create a branch, work on it and pull request when you're done
+1. [Don't break the master] Commit in master branch only if you have something that works
+2. [New Feature] To work on a new feature, create a branch, work on it and pull request when you're done
