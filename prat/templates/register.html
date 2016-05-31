@@ -1,13 +1,24 @@
-{% extends 'layout.html' %}
+{% extends "layout.html" %}
 
-{% block content%}
-    <h2 class="centered">Create your account</h2>
-    <div class="register">
-        <p class="error">{{ message }}</p>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Register</button>
-        </form>
-    </div>
-{% endblock%}
+{% block content %}
+    <form method="post">
+        <div class="task-details-panel task-edit-panel">
+            <div class="header">
+                <div class="left">
+                    <h4>Register</h4>
+                </div>
+                <div class="right">
+                    <span class="details">
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <input class="button" type="submit" value="Register">
+                    </span>
+                </div>
+            </div>
+            <div class="content">
+                <p class="error">{{ message }}</p>
+                {% csrf_token %}
+                {{ form.as_p }}
+            </div>
+        </div>
+    </form>
+{% endblock %}

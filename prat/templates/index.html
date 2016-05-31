@@ -5,6 +5,12 @@
 
 {% block content %}
 
+    {% if overdue_tasks_no == 0 and today_tasks_no == 0 and completed_tasks_no == 0  %}
+        <div class="notasks">
+            <h2>You have no tasks.<br />Please create one.</h2>
+        </div>
+    {% endif %}
+
     {% if overdue_tasks_no > 0 %}
     <div class="home-showcase-panel">
         <div class="panel-header">

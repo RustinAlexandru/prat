@@ -85,7 +85,9 @@ def view_profile(request, username = None):
 @login_required
 def edit_profile(request):
     if request.method == 'GET':
-        form = EditProfileForm()
+        user = request.user
+        profile = user.profile
+        form = EditProfileForm(initial={'first_name': profile.first_name, 'last_name': profile.last_name, 'gender': profile.gender})
         context = {
             'form': form,
         }

@@ -211,7 +211,7 @@ class UserGroupComment(models.Model):
                     verbose_name = 'user', on_delete = models.CASCADE)
 
     def __unicode__(self):
-        return u'{} @ {}'.format(self.author, self.date_added)
+        return u'{} @ {}'.format(self.user.username, self.text)
 
 
 class Theme(models.Model):

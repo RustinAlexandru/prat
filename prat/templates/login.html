@@ -2,15 +2,25 @@
 
 {% block toggle_login %}{% endblock %}
 
-{% block heading %}
-  <h2>Login</h2>
-{% endblock %}
-
 {% block content %}
-  <form action="{% url "login" %}" method="post" accept-charset="utf-8">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="hidden" name="next" value="{{ next }}">
-    <input class="btn btn-default" type="submit" value="Login">
-  </form>
+    <form action="{% url "login" %}" method="post" accept-charset="utf-8">
+        <div class="task-details-panel task-edit-panel">
+            <div class="header">
+                <div class="left">
+                    <h4>Login</h4>
+                </div>
+                <div class="right">
+                    <span class="details">
+                        <input type="hidden" name="next" value="{{ next }}">
+                        <input class="button" type="submit" value="Login">
+                    </span>
+                </div>
+            </div>
+            <div class="content">
+                <p class="error">{{ message }}</p>
+                {% csrf_token %}
+                {{ form.as_p }}
+            </div>
+        </div>
+    </form>
 {% endblock %}
