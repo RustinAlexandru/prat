@@ -29,7 +29,7 @@
 ## Usage
 
 
-- Make your own migartions
+- Make your own migartions (whenever you change the models)
 
     ` ./manage.py makemigrations `
 
